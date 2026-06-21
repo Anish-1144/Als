@@ -68,7 +68,7 @@ router.get("/documents", async (_req, res) => {
 
 router.get("/typography", async (_req, res) => {
   const doc = await Typography.findOne().sort({ updatedAt: -1 });
-  return ok(res, mergeTypographyData(doc?.toObject() ?? null));
+  return ok(res, mergeTypographyData(doc?.toObject() as Parameters<typeof mergeTypographyData>[0]));
 });
 
 router.get("/navigation", async (_req, res) => {
@@ -79,7 +79,7 @@ router.get("/navigation", async (_req, res) => {
 router.get("/footer", async (_req, res) => {
   const doc = await Footer.findOne().sort({ updatedAt: -1 });
   if (!doc) return fail(res, 404, "NOT_FOUND", "Footer not found");
-  return ok(res, mergeFooterData(doc.toObject()));
+  return ok(res, mergeFooterData(doc.toObject() as Parameters<typeof mergeFooterData>[0]));
 });
 
 router.get("/popup", async (_req, res) => {

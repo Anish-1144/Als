@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import { env } from "./config/env.js";
+import { isCloudinaryConfigured } from "./lib/cloudinary.js";
 import { connectDb } from "./db/connect.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.js";
@@ -26,42 +27,23 @@ import { JobPosting } from "./models/JobPosting.js";
 import { Award } from "./models/Award.js";
 import { Lender } from "./models/Lender.js";
 import { CommunityPost } from "./models/CommunityPost.js";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const mediaDir = path.resolve(__dirname, "../../../public/media");
-
 const app = express();
-
-app.use(
-  cors({
+app.use(cors({
     origin: env.corsOrigin,
     credentials: true,
-  }),
-);
+}));
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
-
-let dbReady: Promise<void> | null = null;
-app.use(async (_req, _res, next) => {
-  try {
-    if (!dbReady) dbReady = connectDb();
-    await dbReady;
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
-
 app.use("/media", express.static(mediaDir));
-
 app.get("/health", (_req, res) => {
-  res.json({ success: true, data: { status: "ok" } });
+    res.json({ success: true, data: { status: "ok" } });
 });
-
 const v1 = express.Router();
 v1.use((_req, res, next) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-  next();
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    next();
 });
 v1.use(publicRoutes);
 v1.use("/auth", authRoutes);
@@ -84,8 +66,18 @@ v1.use("/admin/careers/postings", createAdminCrudRouter(JobPosting, { order: 1 }
 v1.use("/admin/awards", createAdminCrudRouter(Award, { order: 1 }));
 v1.use("/admin/lenders", createAdminCrudRouter(Lender, { order: 1 }));
 v1.use("/admin/community-posts", createAdminCrudRouter(CommunityPost, { order: 1 }));
-
 app.use("/api/v1", v1);
 app.use(errorHandler);
-
-export default app;
+async function start() {
+    await connectDb();
+    app.listen(env.port, () => {
+        console.log(`API running on http://localhost:${env.port}`);
+        console.log(isCloudinaryConfigured()
+            ? "Cloudinary: configured"
+            : "Cloudinary: not configured (add CLOUDINARY_* to .env and restart)");
+    });
+}
+start().catch((err) => {
+    console.error("Failed to start API:", err);
+    process.exit(1);
+});

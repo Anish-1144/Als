@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Model } from "mongoose";
 import { Footer } from "../../models/Footer.js";
 import { Navigation } from "../../models/Navigation.js";
 import { Popup } from "../../models/Popup.js";
@@ -6,9 +7,7 @@ import { Typography } from "../../models/Typography.js";
 import { requireAuth } from "../../middleware/auth.js";
 import { ok } from "../../utils/response.js";
 
-function singletonRouter(
-  Model: typeof Footer | typeof Popup | typeof Navigation | typeof Typography,
-) {
+function singletonRouter(Model: Model<any>) {
   const router = Router();
   router.use(requireAuth);
   router.get("/", async (_req, res) => {
@@ -28,7 +27,7 @@ function singletonRouter(
   return router;
 }
 
-export const footerAdminRouter = singletonRouter(Footer);
-export const popupAdminRouter = singletonRouter(Popup);
-export const navigationAdminRouter = singletonRouter(Navigation);
-export const typographyAdminRouter = singletonRouter(Typography);
+export const footerAdminRouter = singletonRouter(Footer as Model<any>);
+export const popupAdminRouter = singletonRouter(Popup as Model<any>);
+export const navigationAdminRouter = singletonRouter(Navigation as Model<any>);
+export const typographyAdminRouter = singletonRouter(Typography as Model<any>);

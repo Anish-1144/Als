@@ -1,14 +1,5 @@
-function getApiUrl(): string {
-  if (process.env.API_URL) {
-    return process.env.API_URL.replace(/\/$/, "");
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}/api-backend`;
-  }
-  return "http://localhost:4000";
-}
-
-const API_BASE = getApiUrl();
+const API_BASE =
+  process.env.API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
 
 export type ApiResponse<T> = {
   success: boolean;

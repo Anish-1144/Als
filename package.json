@@ -2,13 +2,12 @@
   "name": "new-als",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=20"
-  },
   "scripts": {
     "dev": "next dev",
     "dev:api": "npm run dev --prefix apps/api",
     "build": "next build",
+    "build:api": "npm run build --prefix apps/api",
+    "build:all": "npm run build && npm run build:api",
     "start": "next start",
     "lint": "eslint",
     "seed": "npm run seed --prefix apps/api",

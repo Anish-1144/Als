@@ -10,7 +10,6 @@ export interface IPage extends Document {
   heroBackgroundImage: string;
   seoDescription?: string;
   content?: Record<string, unknown>;
-  content?: Record<string, unknown>;
   isPublished: boolean;
 }
 
