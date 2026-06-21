@@ -1,4 +1,4 @@
-import type { ContentCard, SectionHeader } from "@/lib/page-content";
+import type { ContentCard, SectionHeader, SectionVisibility } from "@/lib/page-content";
 
 export type GuideSubsection = {
   title?: string;
@@ -8,7 +8,7 @@ export type GuideSubsection = {
   highlightBullets?: string[];
 };
 
-export type GuideSection = {
+export type GuideSection = SectionVisibility & {
   title: string;
   introParagraphs?: string[];
   subsections: GuideSubsection[];
@@ -16,9 +16,10 @@ export type GuideSection = {
 };
 
 export type GuidePageContent = {
+  introSection?: SectionVisibility;
   introParagraphs: string[];
   sections: GuideSection[];
-  closingBlock?: {
+  closingBlock?: SectionVisibility & {
     title: string;
     paragraphs: string[];
     primaryLabel: string;
@@ -27,7 +28,7 @@ export type GuidePageContent = {
     secondaryLink: string;
   };
   statsSection?: SectionHeader & { cards: ContentCard[] };
-  bottomCta?: {
+  bottomCta?: SectionVisibility & {
     title: string;
     subtitle: string;
     primaryLabel: string;
@@ -35,7 +36,7 @@ export type GuidePageContent = {
     secondaryLabel: string;
     secondaryLink: string;
   };
-  relatedGuides?: { title: string; cards: ContentCard[] };
+  relatedGuides?: SectionVisibility & { title: string; cards: ContentCard[] };
 };
 
 export type ResourceListPageContent = {
@@ -45,7 +46,7 @@ export type ResourceListPageContent = {
     secondaryCtaLabel?: string;
     secondaryCtaLink?: string;
   };
-  bottomCta: {
+  bottomCta: SectionVisibility & {
     title: string;
     body: string;
     primaryLabel: string;
@@ -93,6 +94,8 @@ function mergeSubsections(defaults: GuideSubsection[], raw?: GuideSubsection[]):
 function mergeSections(defaults: GuideSection[], raw?: GuideSection[]): GuideSection[] {
   const len = Math.max(defaults.length, raw?.length ?? 0);
   return Array.from({ length: len }, (_, i) => ({
+    ...defaults[i],
+    ...raw?.[i],
     title: raw?.[i]?.title ?? defaults[i]?.title ?? "",
     introParagraphs: raw?.[i]?.introParagraphs ?? defaults[i]?.introParagraphs,
     bullets: raw?.[i]?.bullets ?? defaults[i]?.bullets,
@@ -148,8 +151,9 @@ export const DEFAULT_DOCUMENTS_PAGE_CONTENT: ResourceListPageContent = {
 import { GUIDE_PAGE_DEFAULTS } from "@/lib/mock-data/seed-resource-guides";
 
 export function mergeGuidePageContent(slug: string, raw?: Partial<GuidePageContent>): GuidePageContent {
-  const d = GUIDE_PAGE_DEFAULTS[slug] ?? { introParagraphs: [], sections: [] };
+  const d = GUIDE_PAGE_DEFAULTS[slug] ?? { introSection: {}, introParagraphs: [], sections: [] };
   return {
+    introSection: { ...(d.introSection ?? {}), ...(raw?.introSection ?? {}) },
     introParagraphs: mergeParagraphs(d.introParagraphs, raw?.introParagraphs),
     sections: mergeSections(d.sections, raw?.sections),
     closingBlock:

@@ -23,6 +23,7 @@ import {
 import { AdminImagePanelShell, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import HomeTeamTab from "@/app/components/admin/home/HomeTeamTab";
 
 type TabDef = { id: string; label: string; description: string };
@@ -218,6 +219,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {isServicesHub && activeTab === "services" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={servicesContent.servicesList.isVisible !== false} onChange={(v) => setServicesContent({ ...servicesContent, servicesList: { ...servicesContent.servicesList, isVisible: v } })} />
               <AdminSectionFields title={servicesContent.servicesList.title} subtitle={servicesContent.servicesList.subtitle ?? ""} onTitleChange={(v) => setServicesContent({ ...servicesContent, servicesList: { ...servicesContent.servicesList, title: v } })} onSubtitleChange={(v) => setServicesContent({ ...servicesContent, servicesList: { ...servicesContent.servicesList, subtitle: v } })} />
               <CardListEditor showLinks cards={servicesContent.servicesList.cards} onChange={(cards) => setServicesContent({ ...servicesContent, servicesList: { ...servicesContent.servicesList, cards } })} />
             </div>
@@ -225,6 +227,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {isServicesHub && activeTab === "why-us" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={servicesContent.whyUs.isVisible !== false} onChange={(v) => setServicesContent({ ...servicesContent, whyUs: { ...servicesContent.whyUs, isVisible: v } })} />
               <AdminSectionFields title={servicesContent.whyUs.title} subtitle={servicesContent.whyUs.subtitle ?? ""} onTitleChange={(v) => setServicesContent({ ...servicesContent, whyUs: { ...servicesContent.whyUs, title: v } })} onSubtitleChange={(v) => setServicesContent({ ...servicesContent, whyUs: { ...servicesContent.whyUs, subtitle: v } })} />
               <CardListEditor cards={servicesContent.whyUs.cards} onChange={(cards) => setServicesContent({ ...servicesContent, whyUs: { ...servicesContent.whyUs, cards } })} />
             </div>
@@ -232,17 +235,22 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {isServicesHub && activeTab === "team" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={servicesContent.teamSection.isVisible !== false} onChange={(v) => setServicesContent({ ...servicesContent, teamSection: { ...servicesContent.teamSection, isVisible: v } })} />
               <AdminSectionFields title={servicesContent.teamSection.title} subtitle={servicesContent.teamSection.subtitle ?? ""} onTitleChange={(v) => setServicesContent({ ...servicesContent, teamSection: { ...servicesContent.teamSection, title: v } })} onSubtitleChange={(v) => setServicesContent({ ...servicesContent, teamSection: { ...servicesContent.teamSection, subtitle: v } })} />
               <HomeTeamTab />
             </div>
           )}
 
           {!isServicesHub && activeTab === "topic-tiles" && (
-            <CardListEditor showAnchor cards={loanContent.topicTiles} onChange={(topicTiles) => setLoanContent({ ...loanContent, topicTiles: topicTiles as TopicTile[] })} />
+            <>
+              <SectionVisibilityField visible={loanContent.topicTilesSection.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, topicTilesSection: { ...loanContent.topicTilesSection, isVisible: v } })} />
+              <CardListEditor showAnchor cards={loanContent.topicTiles} onChange={(topicTiles) => setLoanContent({ ...loanContent, topicTiles: topicTiles as TopicTile[] })} />
+            </>
           )}
 
           {!isServicesHub && activeTab === "other-solutions" && loanContent.otherSolutions && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={loanContent.otherSolutions.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, otherSolutions: { ...loanContent.otherSolutions!, isVisible: v } })} />
               <AdminField label="Section title"><input className={inputClass()} value={loanContent.otherSolutions.title} onChange={(e) => setLoanContent({ ...loanContent, otherSolutions: { ...loanContent.otherSolutions!, title: e.target.value } })} /></AdminField>
               <CardListEditor showLinks cards={loanContent.otherSolutions.cards} onChange={(cards) => setLoanContent({ ...loanContent, otherSolutions: { ...loanContent.otherSolutions!, cards } })} />
             </div>
@@ -252,6 +260,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
             <div className="space-y-4">
               {loanContent.spotlightSections.map((section, index) => (
                 <AdminCardGroup key={index} index={index} title={section.title || `Section ${index + 1}`}>
+                  <SectionVisibilityField visible={section.isVisible !== false} onChange={(v) => { const spotlightSections = updateCard(loanContent.spotlightSections, index, { isVisible: v }); setLoanContent({ ...loanContent, spotlightSections }); }} />
                   <AdminField label="Anchor ID"><input className={inputClass()} value={section.id ?? ""} onChange={(e) => { const spotlightSections = updateCard(loanContent.spotlightSections, index, { id: e.target.value }); setLoanContent({ ...loanContent, spotlightSections }); }} /></AdminField>
                   <AdminField label="Section title"><input className={inputClass()} value={section.title} onChange={(e) => { const spotlightSections = updateCard(loanContent.spotlightSections, index, { title: e.target.value }); setLoanContent({ ...loanContent, spotlightSections }); }} /></AdminField>
                   <AdminField label="Section subtitle"><textarea className={inputClass()} rows={3} value={section.subtitle} onChange={(e) => { const spotlightSections = updateCard(loanContent.spotlightSections, index, { subtitle: e.target.value }); setLoanContent({ ...loanContent, spotlightSections }); }} /></AdminField>
@@ -269,6 +278,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {!isServicesHub && activeTab === "why-us" && loanContent.whyUs && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={loanContent.whyUs.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, whyUs: { ...loanContent.whyUs!, isVisible: v } })} />
               <AdminSectionFields title={loanContent.whyUs.title} subtitle={loanContent.whyUs.subtitle ?? ""} onTitleChange={(v) => setLoanContent({ ...loanContent, whyUs: { ...loanContent.whyUs!, title: v } })} onSubtitleChange={(v) => setLoanContent({ ...loanContent, whyUs: { ...loanContent.whyUs!, subtitle: v } })} />
               <CardListEditor cards={loanContent.whyUs.cards} onChange={(cards) => setLoanContent({ ...loanContent, whyUs: { ...loanContent.whyUs!, cards } })} />
             </div>
@@ -276,6 +286,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {!isServicesHub && activeTab === "benefits" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={loanContent.benefits.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, benefits: { ...loanContent.benefits, isVisible: v } })} />
               <AdminSectionFields title={loanContent.benefits.title} subtitle={loanContent.benefits.subtitle ?? ""} onTitleChange={(v) => setLoanContent({ ...loanContent, benefits: { ...loanContent.benefits, title: v } })} onSubtitleChange={(v) => setLoanContent({ ...loanContent, benefits: { ...loanContent.benefits, subtitle: v } })} />
               <CardListEditor cards={loanContent.benefits.cards} onChange={(cards) => setLoanContent({ ...loanContent, benefits: { ...loanContent.benefits, cards } })} />
             </div>
@@ -283,6 +294,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {!isServicesHub && activeTab === "more-services" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={loanContent.moreServices.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, moreServices: { ...loanContent.moreServices, isVisible: v } })} />
               <AdminSectionFields title={loanContent.moreServices.title} subtitle={loanContent.moreServices.subtitle ?? ""} onTitleChange={(v) => setLoanContent({ ...loanContent, moreServices: { ...loanContent.moreServices, title: v } })} onSubtitleChange={(v) => setLoanContent({ ...loanContent, moreServices: { ...loanContent.moreServices, subtitle: v } })} />
               <CardListEditor cards={loanContent.moreServices.cards} onChange={(cards) => setLoanContent({ ...loanContent, moreServices: { ...loanContent.moreServices, cards } })} />
             </div>
@@ -290,6 +302,7 @@ export default function AdminServicesEditor({ slug }: { slug: ServiceSlug }) {
 
           {!isServicesHub && activeTab === "faqs" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={loanContent.faqs.isVisible !== false} onChange={(v) => setLoanContent({ ...loanContent, faqs: { ...loanContent.faqs, isVisible: v } })} />
               <AdminSectionFields title={loanContent.faqs.title} subtitle={loanContent.faqs.subtitle ?? ""} onTitleChange={(v) => setLoanContent({ ...loanContent, faqs: { ...loanContent.faqs, title: v } })} onSubtitleChange={(v) => setLoanContent({ ...loanContent, faqs: { ...loanContent.faqs, subtitle: v } })} />
               <div className="space-y-4">
                 {loanContent.faqs.items.map((faq, index) => (

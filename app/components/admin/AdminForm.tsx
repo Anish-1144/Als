@@ -69,6 +69,42 @@ export function ReadOnlyUrlInput({ value }: { value: string }) {
   );
 }
 
+export function AdminSectionVisibilityToggle({
+  visible,
+  onChange,
+  label = "Show section on live site",
+  description = "Turn off to hide this section from visitors",
+}: {
+  visible: boolean;
+  onChange: (visible: boolean) => void;
+  label?: string;
+  description?: string;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3">
+      <span>
+        <span className="block text-sm font-medium text-slate-800">{label}</span>
+        <span className="block text-xs text-slate-500">{description}</span>
+      </span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={visible}
+        onClick={() => onChange(!visible)}
+        className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+          visible ? "bg-[#00a69c]" : "bg-slate-300"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
+            visible ? "translate-x-5" : "translate-x-0"
+          }`}
+        />
+      </button>
+    </label>
+  );
+}
+
 export function SaveButton({
   onClick,
   loading,

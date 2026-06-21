@@ -20,7 +20,7 @@ import PageHero from "../components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import { useApiList } from "@/lib/hooks/useApiList";
 import { clientApiData } from "@/lib/api-client";
-import { mergeAboutContent, type AboutContent } from "@/lib/page-content";
+import { mergeAboutContent, type AboutContent, isSectionVisible } from "@/lib/page-content";
 import {
   FaShield,
   FaEye,
@@ -40,6 +40,7 @@ import {
   FaMedal,
 } from "react-icons/fa6";
 import Link from "next/link";
+import { formatDisplayDate } from "@/lib/format-date";
 import {
   getActiveTeam,
   getActiveAwards,
@@ -135,6 +136,7 @@ export default function AboutPage() {
       />
 
       {/* OUR VISION - Mission Section Like ALIC */}
+      {isSectionVisible(pageContent.vision) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -182,8 +184,10 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* FOUNDER MESSAGE */}
+      {isSectionVisible(pageContent.founder) && (
       <section
         id="founder"
         className="py-16 px-6 md:px-12 lg:px-24 bg-[#e6e5e3]"
@@ -239,8 +243,10 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* OUR COMMITMENTS */}
+      {isSectionVisible(pageContent.commitments) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 --bg-[#2d3544]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -294,27 +300,31 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Team Members Section */}
+      {isSectionVisible(pageContent.team) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 --bg-[#2d3544]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                OUR TEAM
-              </span>
-            </div>
+            {pageContent.team.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.team.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8 leading-tight">
-              Meet the Team Working for You
+              {pageContent.team.title}
             </h2>
-            <div className="max-w-4xl mx-auto">
-              <p className="text-lg text-gray-300 leading-relaxed mb-4">
-                Our dedicated team of mortgage professionals is here to guide
-                you through your property journey — from your first consultation
-                to post-settlement support and ongoing reviews.
-              </p>
-            </div>
+            {pageContent.team.subtitle && (
+              <div className="max-w-4xl mx-auto">
+                <p className="text-lg text-gray-300 leading-relaxed mb-4">
+                  {pageContent.team.subtitle}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -512,27 +522,32 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* AWARDS & RECOGNITION */}
+      {isSectionVisible(pageContent.achievements) && (
       <section
         id="awards"
         className="py-20 px-6 md:px-12 lg:px-24 bg-[#e2dcd0]"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                ACHIEVEMENTS
-              </span>
-            </div>
+            {pageContent.achievements.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.achievements.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-gray-800 mb-6">
-              Awards & Recognition
+              {pageContent.achievements.title}
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Our commitment to ethical lending and exceptional service has
-              earned recognition from industry leaders.
-            </p>
+            {pageContent.achievements.subtitle && (
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                {pageContent.achievements.subtitle}
+              </p>
+            )}
           </div>
 
           {sortedAwards.length > 0 ? (
@@ -586,27 +601,32 @@ export default function AboutPage() {
           )}
         </div>
       </section>
+      )}
 
       {/* TESTIMONIALS */}
+      {isSectionVisible(pageContent.testimonials) && (
       <section
         id="testimonials"
         className="py-20 px-6 md:px-12 lg:px-24 --bg-[#2d3544]"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                TESTIMONIALS
-              </span>
-            </div>
+            {pageContent.testimonials.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.testimonials.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-6">
-              What Our Clients Say
+              {pageContent.testimonials.title}
             </h2>
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Don't just take our word for it. Read what our satisfied clients
-              have to say.
-            </p>
+            {pageContent.testimonials.subtitle && (
+              <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                {pageContent.testimonials.subtitle}
+              </p>
+            )}
           </div>
 
           {sortedTestimonials.length > 0 ? (
@@ -667,48 +687,55 @@ export default function AboutPage() {
           )}
         </div>
       </section>
+      )}
 
       {/* CAREERS CTA */}
+      {isSectionVisible(pageContent.joinTeam) && (
       <section
         id="careers"
         className="py-20 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[#00a69c] to-[#00a69c]"
       >
         <div className="max-w-6xl mx-auto text-center text-white">
           <h2 className="text-4xl md:text-5xl font-besley font-medium mb-6">
-            Join Our Team
+            {pageContent.joinTeam.title}
           </h2>
           <p className="text-xl text-white/80 leading-relaxed mb-8 max-w-3xl mx-auto">
-            We're always looking for talented individuals who share our passion
-            for ethical mortgage brokering and exceptional customer service.
+            {pageContent.joinTeam.subtitle}
           </p>
           <Link
-            href="/why-als/careers"
+            href={pageContent.joinTeam.buttonLink}
             className="inline-block bg-white text-[#00a69c] px-8 py-4 rounded-lg font-medium hover:--bg-[#2d3544] hover:text-white transition-colors duration-200"
           >
-            Explore Career Opportunities
+            {pageContent.joinTeam.buttonText}
           </Link>
         </div>
       </section>
+      )}
 
       {/* COMMUNITY INVOLVEMENT */}
+      {isSectionVisible(pageContent.givingBack) && (
       <section
         id="community"
         className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                GIVING BACK
-              </span>
-            </div>
+            {pageContent.givingBack.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.givingBack.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-6">
-              Community Involvement
+              {pageContent.givingBack.title}
             </h2>
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              We believe in giving back to the communities that support us.
-            </p>
+            {pageContent.givingBack.subtitle && (
+              <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                {pageContent.givingBack.subtitle}
+              </p>
+            )}
           </div>
 
           {sortedCommunity.length > 0 ? (
@@ -740,7 +767,7 @@ export default function AboutPage() {
                         <div className="flex items-center gap-1">
                           <FaCalendarDays className="w-4 h-4" />
                           <span>
-                            {new Date(post.date).toLocaleDateString()}
+                            {formatDisplayDate(post.date)}
                           </span>
                         </div>
                       )}
@@ -765,27 +792,32 @@ export default function AboutPage() {
           )}
         </div>
       </section>
+      )}
 
       {/* PANEL OF LENDERS */}
+      {isSectionVisible(pageContent.partners) && (
       <section
         id="lenders"
         className="py-20 px-6 md:px-12 lg:px-24 --bg-[#2d3544]"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                OUR PARTNERS
-              </span>
-            </div>
+            {pageContent.partners.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.partners.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-6">
-              Panel of Lenders
+              {pageContent.partners.title}
             </h2>
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              We work with a diverse panel of lenders to find the perfect loan
-              solution for you.
-            </p>
+            {pageContent.partners.subtitle && (
+              <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                {pageContent.partners.subtitle}
+              </p>
+            )}
           </div>
 
           {sortedLenders.length > 0 ? (
@@ -824,26 +856,32 @@ export default function AboutPage() {
           )}
         </div>
       </section>
+      )}
 
       {/* GET IN TOUCH / CONTACT */}
+      {isSectionVisible(pageContent.contact) && (
       <section
         id="contact"
         className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
-              <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
-                CONTACT US
-              </span>
-            </div>
+            {pageContent.contact.badge && (
+              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
+                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">
+                  {pageContent.contact.badge}
+                </span>
+              </div>
+            )}
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-6">
-              Get in Touch
+              {pageContent.contact.title}
             </h2>
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Ready to start your mortgage journey? Get in touch with us today.
-            </p>
+            {pageContent.contact.subtitle && (
+              <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                {pageContent.contact.subtitle}
+              </p>
+            )}
           </div>
 
           {formSubmitted ? (
@@ -852,11 +890,10 @@ export default function AboutPage() {
                 <FaCircleCheck className="w-12 h-12 text-green-600" />
               </div>
               <h3 className="text-3xl font-besley font-medium text-white mb-4">
-                Thank You!
+                {pageContent.contact.successTitle}
               </h3>
               <p className="text-lg text-gray-400 mb-8">
-                We've received your message and will get back to you within 24
-                hours.
+                {pageContent.contact.successMessage}
               </p>
             </div>
           ) : (
@@ -874,10 +911,10 @@ export default function AboutPage() {
                       <div>
                         <h4 className="font-semibold text-white mb-1">Phone</h4>
                         <a
-                          href="tel:0390877719"
+                          href={`tel:${pageContent.contact.phone.replace(/\s/g, "")}`}
                           className="text-[#00a69c] hover:underline"
                         >
-                          03 9087 7719
+                          {pageContent.contact.phone}
                         </a>
                       </div>
                     </div>
@@ -889,10 +926,10 @@ export default function AboutPage() {
                       <div>
                         <h4 className="font-semibold text-white mb-1">Email</h4>
                         <a
-                          href="mailto:info@alsmortgagesolutions.com.au"
+                          href={`mailto:${pageContent.contact.email}`}
                           className="text-[#00a69c] hover:underline break-all"
                         >
-                          info@alsmortgagesolutions.com.au
+                          {pageContent.contact.email}
                         </a>
                       </div>
                     </div>
@@ -906,7 +943,7 @@ export default function AboutPage() {
                           Address
                         </h4>
                         <p className="text-gray-400">
-                          Melbourne, Victoria, Australia
+                          {pageContent.contact.address}
                         </p>
                       </div>
                     </div>
@@ -917,7 +954,7 @@ export default function AboutPage() {
               <div className="lg:col-span-3">
                 <div className="--bg-[#2d3544] rounded-2xl p-8 md:p-12 shadow-lg">
                   <h3 className="text-2xl font-besley font-semibold text-white mb-6">
-                    Send Us a Message
+                    {pageContent.contact.formTitle}
                   </h3>
                   <form onSubmit={handleContactSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
@@ -1031,6 +1068,7 @@ export default function AboutPage() {
           )}
         </div>
       </section>
+      )}
     </>
   );
 }

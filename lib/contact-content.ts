@@ -5,23 +5,25 @@ export type ContactDetail = {
   note?: string;
 };
 
+import type { SectionVisibility } from "@/lib/page-content";
+
 export type ContactPageContent = {
-  infoSection: {
+  infoSection: SectionVisibility & {
     title: string;
     phone: ContactDetail;
     email: ContactDetail;
     address: { title: string; lines: string[] };
     hours: { title: string; lines: string[] };
   };
-  map: {
+  map: SectionVisibility & {
     title: string;
     embedUrl: string;
   };
-  whyUs: {
+  whyUs: SectionVisibility & {
     title: string;
     items: string[];
   };
-  formSection: {
+  formSection: SectionVisibility & {
     title: string;
     subtitle: string;
     submitButtonText: string;

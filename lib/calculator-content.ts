@@ -1,13 +1,14 @@
-import type { ContentCard, SectionHeader } from "@/lib/page-content";
+import type { ContentCard, SectionHeader, SectionVisibility } from "@/lib/page-content";
 
 export type FactorCard = { title: string; items: string[] };
 export type StrategyItem = { title: string; description: string };
 export type InfoBlock = { title: string; intro?: string; items: string[] };
 
 export type CalculatorsHubContent = {
+  calculatorCardsSection: SectionVisibility;
   calculatorCards: ContentCard[];
   teamSection: SectionHeader;
-  founderSpotlight: {
+  founderSpotlight: SectionVisibility & {
     badge: string;
     name: string;
     role: string;
@@ -19,10 +20,10 @@ export type CalculatorsHubContent = {
 };
 
 export type CalculatorPageContent = {
-  pageHeader: { title: string; subtitle: string };
+  pageHeader: SectionVisibility & { title: string; subtitle: string };
   iframe: { src: string; title: string; height: string };
-  disclaimer: { title: string; body: string };
-  infoSection: {
+  disclaimer: SectionVisibility & { title: string; body: string };
+  infoSection: SectionVisibility & {
     title: string;
     intro: string;
     factorCards: FactorCard[];
@@ -31,7 +32,7 @@ export type CalculatorPageContent = {
     extraBlocks?: InfoBlock[];
   };
   resourcesSection: SectionHeader & { cards: ContentCard[] };
-  governmentBenefits: {
+  governmentBenefits: SectionVisibility & {
     title: string;
     subtitle: string;
     sectionTitle: string;
@@ -39,7 +40,7 @@ export type CalculatorPageContent = {
     ctaLabel: string;
     ctaLink: string;
   };
-  specialOffer: {
+  specialOffer: SectionVisibility & {
     title: string;
     body: string;
     ctaLabel: string;
@@ -150,6 +151,7 @@ function mergeStringList(defaults: string[], raw?: string[]): string[] {
 }
 
 export const DEFAULT_CALCULATORS_HUB_CONTENT: CalculatorsHubContent = {
+  calculatorCardsSection: {},
   calculatorCards: [
     {
       title: "How Much Can I Borrow?",
@@ -389,6 +391,7 @@ export const CALCULATOR_PAGE_DEFAULTS: Record<string, CalculatorPageContent> = {
 export function mergeCalculatorsHubContent(raw?: Partial<CalculatorsHubContent>): CalculatorsHubContent {
   const d = DEFAULT_CALCULATORS_HUB_CONTENT;
   return {
+    calculatorCardsSection: { ...d.calculatorCardsSection, ...raw?.calculatorCardsSection },
     calculatorCards: mergeCards(d.calculatorCards, raw?.calculatorCards),
     teamSection: { ...d.teamSection, ...raw?.teamSection },
     founderSpotlight: { ...d.founderSpotlight, ...raw?.founderSpotlight },

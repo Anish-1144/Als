@@ -3,6 +3,7 @@
 import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { WhyAlsContent } from "@/lib/page-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaShield,
   FaUsers,
@@ -30,6 +31,7 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
     <>
       <PageHero slug="why-als" fallback={getPageHeroFallback("why-als")} />
 
+      {isSectionVisible(reasons) && (
       <section className="py-20 pt-10 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -79,7 +81,9 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(process) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -119,7 +123,9 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(explore) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -229,7 +235,9 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(cta) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[#00a69c] to-[#008f87]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-4xl md:text-5xl font-besley font-medium mb-6">{cta.title}</h2>
@@ -246,6 +254,7 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

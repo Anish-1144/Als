@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
+    "build": "echo \"API uses tsx at runtime\"",
     "seed": "tsx src/scripts/seed.ts"
   },
   "dependencies": {

@@ -18,6 +18,7 @@ import {
 } from "@/app/components/admin/AdminEditorShell";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import { AdminImagePanelShell, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
 
 const SLUG = "how-it-works";
@@ -164,6 +165,7 @@ export default function AdminHowItWorksEditor() {
 
           {activeTab === "process" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={content.processSection.isVisible !== false} onChange={(v) => setContent({ ...content, processSection: { ...content.processSection, isVisible: v } })} />
               <AdminSectionFields
                 title={content.processSection.title}
                 subtitle={content.processSection.subtitle ?? ""}
@@ -203,6 +205,7 @@ export default function AdminHowItWorksEditor() {
 
           {activeTab === "step-cta" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={content.stepDetailCta.isVisible !== false} onChange={(v) => setContent({ ...content, stepDetailCta: { ...content.stepDetailCta, isVisible: v } })} />
               <div className="grid sm:grid-cols-2 gap-4">
                 <AdminField label="Primary button label">
                   <input className={inputClass()} value={content.stepDetailCta.primaryLabel} onChange={(e) => setContent({ ...content, stepDetailCta: { ...content.stepDetailCta, primaryLabel: e.target.value } })} />
@@ -217,6 +220,7 @@ export default function AdminHowItWorksEditor() {
 
           {activeTab === "faqs" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={content.faqs.isVisible !== false} onChange={(v) => setContent({ ...content, faqs: { ...content.faqs, isVisible: v } })} />
               <AdminSectionFields
                 title={content.faqs.title}
                 subtitle={content.faqs.subtitle ?? ""}

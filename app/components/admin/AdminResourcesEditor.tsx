@@ -25,6 +25,7 @@ import {
 } from "@/app/components/admin/AdminEditorShell";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import { AdminImagePanelShell, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
 
 type TabDef = { id: string; label: string; description: string };
@@ -195,15 +196,19 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
           )}
 
           {!isList && activeTab === "intro" && (
-            <AdminField label="Introduction paragraphs (one per line block — use blank line between paragraphs)">
+            <>
+              <SectionVisibilityField visible={guideContent.introSection?.isVisible !== false} onChange={(v) => setGuideContent({ ...guideContent, introSection: { ...guideContent.introSection, isVisible: v } })} />
+              <AdminField label="Introduction paragraphs (one per line block — use blank line between paragraphs)">
               <textarea className={inputClass()} rows={10} value={guideContent.introParagraphs.join("\n\n")} onChange={(e) => setGuideContent({ ...guideContent, introParagraphs: e.target.value.split("\n\n").map((p) => p.trim()).filter(Boolean) })} />
             </AdminField>
+            </>
           )}
 
           {!isList && activeTab === "sections" && (
             <div className="space-y-6">
               {guideContent.sections.map((section, sIndex) => (
                 <AdminCardGroup key={sIndex} index={sIndex} title={section.title || `Section ${sIndex + 1}`}>
+                  <SectionVisibilityField visible={section.isVisible !== false} onChange={(v) => updateSections(updateAt(guideContent.sections, sIndex, { isVisible: v }))} />
                   <AdminField label="Section title"><input className={inputClass()} value={section.title} onChange={(e) => updateSections(updateAt(guideContent.sections, sIndex, { title: e.target.value }))} /></AdminField>
                   <AdminField label="Section intro (optional, paragraphs separated by blank lines)">
                     <textarea className={inputClass()} rows={4} value={(section.introParagraphs ?? []).join("\n\n")} onChange={(e) => updateSections(updateAt(guideContent.sections, sIndex, { introParagraphs: e.target.value.split("\n\n").map((p) => p.trim()).filter(Boolean) }))} />
@@ -230,6 +235,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
             <div className="space-y-8">
               {guideContent.closingBlock && (
                 <div className="space-y-4">
+                  <SectionVisibilityField visible={guideContent.closingBlock.isVisible !== false} onChange={(v) => setGuideContent({ ...guideContent, closingBlock: { ...guideContent.closingBlock!, isVisible: v } })} />
                   <h3 className="font-semibold text-[#1d293d]">Closing block</h3>
                   <AdminField label="Title"><input className={inputClass()} value={guideContent.closingBlock.title} onChange={(e) => setGuideContent({ ...guideContent, closingBlock: { ...guideContent.closingBlock!, title: e.target.value } })} /></AdminField>
                   <AdminField label="Paragraphs"><textarea className={inputClass()} rows={5} value={guideContent.closingBlock.paragraphs.join("\n\n")} onChange={(e) => setGuideContent({ ...guideContent, closingBlock: { ...guideContent.closingBlock!, paragraphs: e.target.value.split("\n\n").map((p) => p.trim()).filter(Boolean) } })} /></AdminField>
@@ -243,6 +249,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
               )}
               {guideContent.statsSection && (
                 <div className="space-y-4 pt-6 border-t border-gray-100">
+                  <SectionVisibilityField visible={guideContent.statsSection.isVisible !== false} onChange={(v) => setGuideContent({ ...guideContent, statsSection: { ...guideContent.statsSection!, isVisible: v } })} />
                   <h3 className="font-semibold text-[#1d293d]">Stats section</h3>
                   <AdminSectionFields title={guideContent.statsSection.title} subtitle={guideContent.statsSection.subtitle ?? ""} onTitleChange={(v) => setGuideContent({ ...guideContent, statsSection: { ...guideContent.statsSection!, title: v } })} onSubtitleChange={(v) => setGuideContent({ ...guideContent, statsSection: { ...guideContent.statsSection!, subtitle: v } })} />
                   <CardListEditor cards={guideContent.statsSection.cards} onChange={(cards) => setGuideContent({ ...guideContent, statsSection: { ...guideContent.statsSection!, cards } })} />
@@ -250,6 +257,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
               )}
               {guideContent.bottomCta && (
                 <div className="space-y-4 pt-6 border-t border-gray-100">
+                  <SectionVisibilityField visible={guideContent.bottomCta.isVisible !== false} onChange={(v) => setGuideContent({ ...guideContent, bottomCta: { ...guideContent.bottomCta!, isVisible: v } })} />
                   <h3 className="font-semibold text-[#1d293d]">Bottom CTA</h3>
                   <AdminField label="Title"><input className={inputClass()} value={guideContent.bottomCta.title} onChange={(e) => setGuideContent({ ...guideContent, bottomCta: { ...guideContent.bottomCta!, title: e.target.value } })} /></AdminField>
                   <AdminField label="Subtitle"><textarea className={inputClass()} rows={2} value={guideContent.bottomCta.subtitle} onChange={(e) => setGuideContent({ ...guideContent, bottomCta: { ...guideContent.bottomCta!, subtitle: e.target.value } })} /></AdminField>
@@ -263,6 +271,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
               )}
               {guideContent.relatedGuides && (
                 <div className="space-y-4 pt-6 border-t border-gray-100">
+                  <SectionVisibilityField visible={guideContent.relatedGuides.isVisible !== false} onChange={(v) => setGuideContent({ ...guideContent, relatedGuides: { ...guideContent.relatedGuides!, isVisible: v } })} />
                   <AdminField label="Related guides title"><input className={inputClass()} value={guideContent.relatedGuides.title} onChange={(e) => setGuideContent({ ...guideContent, relatedGuides: { ...guideContent.relatedGuides!, title: e.target.value } })} /></AdminField>
                   <CardListEditor showLinks cards={guideContent.relatedGuides.cards} onChange={(cards) => setGuideContent({ ...guideContent, relatedGuides: { ...guideContent.relatedGuides!, cards } })} />
                 </div>
@@ -272,6 +281,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
 
           {isList && activeTab === "intro" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={listContent.intro.isVisible !== false} onChange={(v) => setListContent({ ...listContent, intro: { ...listContent.intro, isVisible: v } })} />
               <AdminField label="Badge"><input className={inputClass()} value={listContent.intro.badge ?? ""} onChange={(e) => setListContent({ ...listContent, intro: { ...listContent.intro, badge: e.target.value } })} /></AdminField>
               <AdminSectionFields title={listContent.intro.title} subtitle={listContent.intro.subtitle ?? ""} onTitleChange={(v) => setListContent({ ...listContent, intro: { ...listContent.intro, title: v } })} onSubtitleChange={(v) => setListContent({ ...listContent, intro: { ...listContent.intro, subtitle: v } })} />
               <div className="grid sm:grid-cols-2 gap-4">
@@ -296,6 +306,7 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
 
           {isList && activeTab === "bottom-cta" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={listContent.bottomCta.isVisible !== false} onChange={(v) => setListContent({ ...listContent, bottomCta: { ...listContent.bottomCta, isVisible: v } })} />
               <AdminField label="Title"><input className={inputClass()} value={listContent.bottomCta.title} onChange={(e) => setListContent({ ...listContent, bottomCta: { ...listContent.bottomCta, title: e.target.value } })} /></AdminField>
               <AdminField label="Body"><textarea className={inputClass()} rows={3} value={listContent.bottomCta.body} onChange={(e) => setListContent({ ...listContent, bottomCta: { ...listContent.bottomCta, body: e.target.value } })} /></AdminField>
               <div className="grid sm:grid-cols-2 gap-4">

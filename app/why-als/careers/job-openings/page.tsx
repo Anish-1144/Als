@@ -20,6 +20,7 @@ import PageHero from "../../../components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import { useApiList } from "@/lib/hooks/useApiList";
 import { getActiveJobPostings } from "@/lib/mock-data";
+import { formatDisplayDate } from "@/lib/format-date";
 import {
   FaMapPin,
   FaClock,
@@ -116,8 +117,7 @@ export default function JobOpenings() {
                             <div className="flex items-center gap-2">
                               <FaCalendarDays className="w-4 h-4 text-[#00a69c]" />
                               <span>
-                                Closes:{" "}
-                                {new Date(job.closingDate).toLocaleDateString()}
+                                Closes: {formatDisplayDate(job.closingDate)}
                               </span>
                             </div>
                           )}

@@ -4,7 +4,8 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.resolve(__dirname, "../../../../.env");
-dotenv.config({ path: envPath, override: true });
+dotenv.config({ path: envPath, override: false });
+dotenv.config({ override: true });
 
 function requireEnv(key: string, fallback?: string): string {
   const value = process.env[key] ?? fallback;
@@ -17,7 +18,9 @@ export const env = {
   mongoUri: requireEnv("MONGO_URI"),
   jwtSecret: requireEnv("JWT_SECRET", "dev-secret-change-in-production"),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
-  corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+  corsOrigin:
+    process.env.CORS_ORIGIN ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
   seedAdminEmail:
     process.env.SEED_ADMIN_EMAIL ?? "admin@alsmortgagesolutions.com.au",
   seedAdminPassword: process.env.SEED_ADMIN_PASSWORD ?? "Admin@123456",

@@ -3,6 +3,7 @@
 import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { CareersContent } from "@/lib/page-content";
+import { isSectionVisible } from "@/lib/page-content";
 import { FaRocket, FaUsers, FaLightbulb, FaHeart, FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
 
@@ -15,6 +16,7 @@ export default function CareersPageClient({ content }: { content: CareersContent
     <>
       <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
 
+      {isSectionVisible(intro) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -46,7 +48,9 @@ export default function CareersPageClient({ content }: { content: CareersContent
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(benefits) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#e6e5e3]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -73,7 +77,9 @@ export default function CareersPageClient({ content }: { content: CareersContent
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(navCards) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-besley font-medium text-white mb-12 text-center">
@@ -108,7 +114,9 @@ export default function CareersPageClient({ content }: { content: CareersContent
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(cta) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-6">{cta.title}</h2>
@@ -121,6 +129,7 @@ export default function CareersPageClient({ content }: { content: CareersContent
           </a>
         </div>
       </section>
+      )}
     </>
   );
 }

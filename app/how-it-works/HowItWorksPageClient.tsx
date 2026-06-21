@@ -16,6 +16,7 @@ import ContactCTASection from "@/app/components/ContactCTASection";
 import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { HowItWorksContent } from "@/lib/how-it-works-content";
+import { isSectionVisible } from "@/lib/page-content";
 
 const STEP_ICONS = [FaComments, FaFileLines, FaMagnifyingGlass, FaHandshake, FaKey];
 
@@ -77,6 +78,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
     <>
       <PageHero slug="how-it-works" fallback={getPageHeroFallback("how-it-works")} />
 
+      {isSectionVisible(content.processSection) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div ref={stepsContainerRef} className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -102,6 +104,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
           )}
         </div>
       </section>
+      )}
 
       {activeStepData && (
         <section ref={detailsSectionRef} className="py-16 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
@@ -132,6 +135,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
                 ))}
               </div>
 
+              {isSectionVisible(content.stepDetailCta) && (
               <div className="mt-8 pt-8 border-t border-gray-600 flex flex-wrap items-center gap-4">
                 <Link
                   href={content.stepDetailCta.primaryLink}
@@ -149,11 +153,13 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
                   {content.stepDetailCta.secondaryLabel}
                 </button>
               </div>
+              )}
             </div>
           </div>
         </section>
       )}
 
+      {isSectionVisible(content.faqs) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
@@ -194,6 +200,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
           </div>
         </div>
       </section>
+      )}
 
       <ContactCTASection />
     </>

@@ -4,6 +4,7 @@ import ServerPageHero from "@/app/components/ServerPageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import { getTeamData } from "@/lib/api-server";
 import type { ServicesContent } from "@/lib/services-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaHouse,
   FaChartLine,
@@ -32,6 +33,7 @@ export default async function ServicesPageClient({ content }: { content: Service
     <>
       <ServerPageHero slug="services" fallback={getPageHeroFallback("services", { height: "h-80" })} />
 
+      {isSectionVisible(servicesList) && (
       <section className="py-20 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -65,7 +67,9 @@ export default async function ServicesPageClient({ content }: { content: Service
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(whyUs) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -93,7 +97,9 @@ export default async function ServicesPageClient({ content }: { content: Service
           </div>
         </div>
       </section>
+      )}
 
+      {isSectionVisible(teamSection) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -150,6 +156,7 @@ export default async function ServicesPageClient({ content }: { content: Service
           </div>
         </div>
       </section>
+      )}
 
       <ContactCTASection />
     </>

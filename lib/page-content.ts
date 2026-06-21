@@ -13,13 +13,18 @@ export type ContentStep = {
   step?: string;
 };
 
-export type SectionHeader = {
+export type SectionVisibility = {
+  /** When false, section is hidden on the live site. Defaults to visible. */
+  isVisible?: boolean;
+};
+
+export type SectionHeader = SectionVisibility & {
   badge?: string;
   title: string;
   subtitle?: string;
 };
 
-export type PageCta = {
+export type PageCta = SectionVisibility & {
   title: string;
   subtitle: string;
   primaryText: string;
@@ -50,6 +55,25 @@ export type AboutContent = {
     imageUrl: string;
   };
   commitments: SectionHeader & { cards: ContentCard[] };
+  team: SectionHeader;
+  achievements: SectionHeader;
+  testimonials: SectionHeader;
+  joinTeam: SectionVisibility & {
+    title: string;
+    subtitle: string;
+    buttonText: string;
+    buttonLink: string;
+  };
+  givingBack: SectionHeader;
+  partners: SectionHeader;
+  contact: SectionHeader & {
+    phone: string;
+    email: string;
+    address: string;
+    formTitle: string;
+    successTitle: string;
+    successMessage: string;
+  };
 };
 
 export type CareersContent = {
@@ -60,7 +84,8 @@ export type CareersContent = {
   };
   benefits: SectionHeader & { cards: ContentCard[] };
   navCards: SectionHeader & { cards: ContentCard[] };
-  cta: { title: string; subtitle: string; buttonText: string; buttonLink: string };
+  jobs: SectionVisibility;
+  cta: SectionVisibility & { title: string; subtitle: string; buttonText: string; buttonLink: string };
 };
 
 export const DEFAULT_WHY_ALS_CONTENT: WhyAlsContent = {
@@ -232,6 +257,54 @@ Importantly, we also connect our clients to other relevant solutions providers, 
       },
     ],
   },
+  team: {
+    badge: "OUR TEAM",
+    title: "Meet the Team Working for You",
+    subtitle:
+      "Our dedicated team of mortgage professionals is here to guide you through your property journey — from your first consultation to post-settlement support and ongoing reviews.",
+  },
+  achievements: {
+    badge: "ACHIEVEMENTS",
+    title: "Awards & Recognition",
+    subtitle:
+      "Our commitment to ethical lending and exceptional service has earned recognition from industry leaders.",
+  },
+  testimonials: {
+    badge: "TESTIMONIALS",
+    title: "What Our Clients Say",
+    subtitle:
+      "Don't just take our word for it. Read what our satisfied clients have to say.",
+  },
+  joinTeam: {
+    title: "Join Our Team",
+    subtitle:
+      "We're always looking for talented individuals who share our passion for ethical mortgage brokering and exceptional customer service.",
+    buttonText: "Explore Career Opportunities",
+    buttonLink: "/why-als/careers",
+  },
+  givingBack: {
+    badge: "GIVING BACK",
+    title: "Community Involvement",
+    subtitle: "We believe in giving back to the communities that support us.",
+  },
+  partners: {
+    badge: "OUR PARTNERS",
+    title: "Panel of Lenders",
+    subtitle:
+      "We work with a diverse panel of lenders to find the perfect loan solution for you.",
+  },
+  contact: {
+    badge: "CONTACT US",
+    title: "Get in Touch",
+    subtitle: "Ready to start your mortgage journey? Get in touch with us today.",
+    phone: "03 9087 7719",
+    email: "info@alsmortgagesolutions.com.au",
+    address: "Melbourne, Victoria, Australia",
+    formTitle: "Send Us a Message",
+    successTitle: "Thank You!",
+    successMessage:
+      "We've received your message and will get back to you within 24 hours.",
+  },
 };
 
 export const DEFAULT_CAREERS_CONTENT: CareersContent = {
@@ -306,6 +379,7 @@ export const DEFAULT_CAREERS_CONTENT: CareersContent = {
       },
     ],
   },
+  jobs: { isVisible: true },
   cta: {
     title: "Questions About Careers?",
     subtitle:
@@ -321,6 +395,10 @@ function mergeCards(defaults: ContentCard[], raw?: ContentCard[]): ContentCard[]
 
 function mergeSteps(defaults: ContentStep[], raw?: ContentStep[]): ContentStep[] {
   return defaults.map((d, i) => ({ ...d, ...(raw?.[i] ?? {}) }));
+}
+
+export function isSectionVisible(section?: SectionVisibility): boolean {
+  return section?.isVisible !== false;
 }
 
 export function mergeWhyAlsContent(raw?: Partial<WhyAlsContent>): WhyAlsContent {
@@ -355,6 +433,13 @@ export function mergeAboutContent(raw?: Partial<AboutContent>): AboutContent {
       ...raw?.commitments,
       cards: mergeCards(d.commitments.cards, raw?.commitments?.cards),
     },
+    team: { ...d.team, ...raw?.team },
+    achievements: { ...d.achievements, ...raw?.achievements },
+    testimonials: { ...d.testimonials, ...raw?.testimonials },
+    joinTeam: { ...d.joinTeam, ...raw?.joinTeam },
+    givingBack: { ...d.givingBack, ...raw?.givingBack },
+    partners: { ...d.partners, ...raw?.partners },
+    contact: { ...d.contact, ...raw?.contact },
   };
 }
 
@@ -372,6 +457,7 @@ export function mergeCareersContent(raw?: Partial<CareersContent>): CareersConte
       ...raw?.navCards,
       cards: mergeCards(d.navCards.cards, raw?.navCards?.cards),
     },
+    jobs: { ...d.jobs, ...raw?.jobs },
     cta: { ...d.cta, ...raw?.cta },
   };
 }

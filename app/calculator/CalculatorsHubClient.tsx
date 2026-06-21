@@ -4,6 +4,7 @@ import ServerPageHero from "@/app/components/ServerPageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import { getTeamData } from "@/lib/api-server";
 import type { CalculatorsHubContent } from "@/lib/calculator-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaArrowRight,
   FaChartLine,
@@ -17,12 +18,13 @@ const CALC_ICONS = [FaDollarSign, FaChartLine, FaHouse];
 
 export default async function CalculatorsHubClient({ content }: { content: CalculatorsHubContent }) {
   const sortedTeam = (await getTeamData()).slice(0, 3);
-  const { calculatorCards, teamSection, founderSpotlight } = content;
+  const { calculatorCardsSection, calculatorCards, teamSection, founderSpotlight } = content;
 
   return (
     <>
       <ServerPageHero slug="calculator" fallback={getPageHeroFallback("calculator")} />
 
+      {isSectionVisible(calculatorCardsSection) && (
       <section className="py-20 mt-2 px-6 md:px-12 lg:px-24 relative z-20">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
@@ -47,9 +49,12 @@ export default async function CalculatorsHubClient({ content }: { content: Calcu
           </div>
         </div>
       </section>
+      )}
 
+      {(isSectionVisible(teamSection) || isSectionVisible(founderSpotlight)) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
+          {isSectionVisible(teamSection) && (
           <div className="text-center mb-16">
             {teamSection.badge && (
               <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
@@ -59,7 +64,9 @@ export default async function CalculatorsHubClient({ content }: { content: Calcu
             <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{teamSection.title}</h2>
             {teamSection.subtitle && <p className="text-lg text-gray-400 max-w-3xl mx-auto">{teamSection.subtitle}</p>}
           </div>
+          )}
 
+          {isSectionVisible(founderSpotlight) && (
           <div className="max-w-4xl mx-auto mb-12">
             <div className="bg-[#2d3544] rounded-2xl shadow-lg overflow-hidden border border-gray-600">
               <div className="grid md:grid-cols-2">
@@ -83,8 +90,9 @@ export default async function CalculatorsHubClient({ content }: { content: Calcu
               </div>
             </div>
           </div>
+          )}
 
-          {sortedTeam.length > 0 && (
+          {isSectionVisible(teamSection) && sortedTeam.length > 0 && (
             <div className="grid md:grid-cols-3 gap-8">
               {sortedTeam.map((member, index) => (
                 <div key={member.name || index} className="bg-[#2d3544] rounded-2xl shadow-lg overflow-hidden border border-gray-600">
@@ -125,6 +133,7 @@ export default async function CalculatorsHubClient({ content }: { content: Calcu
           )}
         </div>
       </section>
+      )}
 
       <ContactCTASection />
     </>

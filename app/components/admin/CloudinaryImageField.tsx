@@ -13,6 +13,8 @@ type CloudinaryImageFieldProps = {
   hint?: string;
   /** Tighter layout for the right-hand image panel — upload preview only */
   compact?: boolean;
+  /** Logo-style preview keeps full image visible */
+  objectFit?: "cover" | "contain";
 };
 
 export default function CloudinaryImageField({
@@ -25,6 +27,7 @@ export default function CloudinaryImageField({
   aspectClass = "aspect-[16/9]",
   hint,
   compact = false,
+  objectFit = "cover",
 }: CloudinaryImageFieldProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -84,12 +87,16 @@ export default function CloudinaryImageField({
       }`}
     >
       {value ? (
-        <div className={`relative ${aspectClass} w-full bg-slate-900`}>
+        <div
+          className={`relative ${aspectClass} w-full ${
+            objectFit === "contain" ? "bg-white" : "bg-slate-900"
+          }`}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={value}
             alt={alt || "Preview"}
-            className="h-full w-full object-cover"
+            className={`h-full w-full ${objectFit === "contain" ? "object-contain p-4" : "object-cover"}`}
           />
           <div className="group absolute inset-0">
             <div className="absolute inset-x-0 bottom-0 flex flex-wrap gap-2 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100">

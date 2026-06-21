@@ -23,7 +23,9 @@ export type HowItWorksStep = {
   description: string;
 };
 
-export type HomeCta = {
+import type { SectionVisibility } from "@/lib/page-content";
+
+export type HomeCta = SectionVisibility & {
   title: string;
   subtitle: string;
   buttonText: string;

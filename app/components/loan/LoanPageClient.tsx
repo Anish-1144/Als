@@ -6,6 +6,7 @@ import PageHero from "@/app/components/PageHero";
 import ContactCTASection from "@/app/components/ContactCTASection";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { LoanPageContent, ServiceSlug } from "@/lib/services-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaHouse,
   FaKey,
@@ -38,6 +39,7 @@ export default function LoanPageClient({
     <>
       <PageHero slug={slug} fallback={getPageHeroFallback(slug)} />
 
+      {isSectionVisible(content.topicTilesSection) && (
       <section className="py-20 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
@@ -86,7 +88,7 @@ export default function LoanPageClient({
             })}
           </div>
 
-          {content.otherSolutions && content.otherSolutions.cards.length > 0 && (
+          {content.otherSolutions && isSectionVisible(content.otherSolutions) && content.otherSolutions.cards.length > 0 && (
             <div className="mt-16">
               <h3 className="text-3xl font-besley font-semibold text-white mb-8 text-center">{content.otherSolutions.title}</h3>
               <div className="grid md:grid-cols-3 gap-8">
@@ -105,8 +107,9 @@ export default function LoanPageClient({
           )}
         </div>
       </section>
+      )}
 
-      {content.spotlightSections.map((section, index) => (
+      {content.spotlightSections.filter(isSectionVisible).map((section, index) => (
         <section key={index} id={section.id} className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544] scroll-mt-20">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -127,7 +130,7 @@ export default function LoanPageClient({
         </section>
       ))}
 
-      {content.whyUs && content.whyUs.cards.length > 0 && (
+      {content.whyUs && isSectionVisible(content.whyUs) && content.whyUs.cards.length > 0 && (
         <section className="relative py-20 px-6 md:px-12 lg:px-24 bg-[#e6e5e3]">
           <div className="relative z-10 max-w-7xl mx-auto">
             <div className="text-center mb-16">
@@ -151,73 +154,79 @@ export default function LoanPageClient({
         </section>
       )}
 
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            {content.benefits.badge && (
-              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.benefits.badge}</span>
-              </div>
-            )}
-            <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.benefits.title}</h2>
-            {content.benefits.subtitle && <p className="text-lg text-gray-400 max-w-3xl mx-auto">{content.benefits.subtitle}</p>}
+      {isSectionVisible(content.benefits) && (
+        <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              {content.benefits.badge && (
+                <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                  <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.benefits.badge}</span>
+                </div>
+              )}
+              <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.benefits.title}</h2>
+              {content.benefits.subtitle && <p className="text-lg text-gray-400 max-w-3xl mx-auto">{content.benefits.subtitle}</p>}
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {content.benefits.cards.map((card, index) => (
+                <div key={index} className="text-center bg-[#2d3544] p-8 rounded-2xl">
+                  <h3 className="text-xl font-besley font-semibold text-white mb-4">{card.title}</h3>
+                  <p className="text-gray-400 leading-relaxed">{card.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {content.benefits.cards.map((card, index) => (
-              <div key={index} className="text-center bg-[#2d3544] p-8 rounded-2xl">
-                <h3 className="text-xl font-besley font-semibold text-white mb-4">{card.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{card.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.moreServices.title}</h2>
-            {content.moreServices.subtitle && <p className="text-xl text-gray-400 max-w-4xl mx-auto">{content.moreServices.subtitle}</p>}
+      {isSectionVisible(content.moreServices) && (
+        <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.moreServices.title}</h2>
+              {content.moreServices.subtitle && <p className="text-xl text-gray-400 max-w-4xl mx-auto">{content.moreServices.subtitle}</p>}
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {content.moreServices.cards.map((card, index) => (
+                <div key={index} className="bg-[#1d293d] p-8 rounded-2xl border border-gray-600 hover:border-[#00a69c] transition-colors">
+                  <h3 className="text-xl font-besley font-semibold text-white mb-4">{card.title}</h3>
+                  <p className="text-gray-400 leading-relaxed">{card.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {content.moreServices.cards.map((card, index) => (
-              <div key={index} className="bg-[#1d293d] p-8 rounded-2xl border border-gray-600 hover:border-[#00a69c] transition-colors">
-                <h3 className="text-xl font-besley font-semibold text-white mb-4">{card.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{card.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            {content.faqs.badge && (
-              <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
-                <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.faqs.badge}</span>
-              </div>
-            )}
-            <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.faqs.title}</h2>
-            {content.faqs.subtitle && <p className="text-lg text-gray-400">{content.faqs.subtitle}</p>}
+      {isSectionVisible(content.faqs) && (
+        <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              {content.faqs.badge && (
+                <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                  <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.faqs.badge}</span>
+                </div>
+              )}
+              <h2 className="text-4xl md:text-5xl font-besley font-medium text-white mb-8">{content.faqs.title}</h2>
+              {content.faqs.subtitle && <p className="text-lg text-gray-400">{content.faqs.subtitle}</p>}
+            </div>
+            <div className="space-y-4">
+              {content.faqs.items.map((faq, index) => (
+                <div key={index} className="bg-[#1d293d] rounded-xl shadow-md overflow-hidden">
+                  <button type="button" onClick={() => setOpenFAQ(openFAQ === index ? null : index)} className="w-full px-6 py-5 flex justify-between items-center hover:bg-[#2d3544] transition-colors">
+                    <h3 className="text-lg font-semibold text-white text-left pr-4">{faq.question}</h3>
+                    <FaChevronDown className={`w-5 h-5 text-[#00a69c] transition-transform flex-shrink-0 ${openFAQ === index ? "rotate-180" : ""}`} />
+                  </button>
+                  {openFAQ === index && (
+                    <div className="px-6 pb-5">
+                      <p className="text-gray-400 leading-relaxed">{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="space-y-4">
-            {content.faqs.items.map((faq, index) => (
-              <div key={index} className="bg-[#1d293d] rounded-xl shadow-md overflow-hidden">
-                <button type="button" onClick={() => setOpenFAQ(openFAQ === index ? null : index)} className="w-full px-6 py-5 flex justify-between items-center hover:bg-[#2d3544] transition-colors">
-                  <h3 className="text-lg font-semibold text-white text-left pr-4">{faq.question}</h3>
-                  <FaChevronDown className={`w-5 h-5 text-[#00a69c] transition-transform flex-shrink-0 ${openFAQ === index ? "rotate-180" : ""}`} />
-                </button>
-                {openFAQ === index && (
-                  <div className="px-6 pb-5">
-                    <p className="text-gray-400 leading-relaxed">{faq.answer}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <ContactCTASection />
     </>

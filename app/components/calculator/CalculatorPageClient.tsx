@@ -5,6 +5,7 @@ import PageHero from "@/app/components/PageHero";
 import ContactCTASection from "@/app/components/ContactCTASection";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { CalculatorPageContent } from "@/lib/calculator-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaArrowRight,
   FaBookOpen,
@@ -32,11 +33,13 @@ export default function CalculatorPageClient({
 
       <section className="py-16 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
+          {isSectionVisible(pageHeader) && (
             <div className="mb-6">
               <h1 className="text-3xl font-besley font-semibold text-white mb-3">{pageHeader.title}</h1>
               <p className="text-lg text-gray-200 leading-relaxed">{pageHeader.subtitle}</p>
             </div>
+          )}
+          <div className="mb-8">
             <div className="bg-[#2d3544] rounded-2xl shadow-xl border border-gray-600 overflow-hidden">
               <div className="relative min-h-[600px]">
                 <iframe
@@ -53,6 +56,7 @@ export default function CalculatorPageClient({
 
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
+              {isSectionVisible(disclaimer) && (
               <div className="bg-[#2d3544] border border-[#00a69c] rounded-2xl p-6">
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-[#00a69c] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -64,7 +68,9 @@ export default function CalculatorPageClient({
                   </div>
                 </div>
               </div>
+              )}
 
+              {isSectionVisible(infoSection) && (
               <div className="bg-[#2d3544] rounded-2xl shadow-lg border border-gray-600 p-8">
                 <h3 className="text-2xl font-besley font-semibold text-white mb-6">{infoSection.title}</h3>
                 <div className="space-y-4 text-gray-200">
@@ -125,7 +131,9 @@ export default function CalculatorPageClient({
                   ))}
                 </div>
               </div>
+              )}
 
+              {isSectionVisible(resourcesSection) && (
               <div className="bg-[#2d3544] rounded-2xl shadow-lg border border-gray-600 overflow-hidden">
                 <div className="bg-gradient-to-r from-[#173ab7] to-[#1e4fd1] p-4">
                   <div className="flex items-center gap-3 text-white">
@@ -158,9 +166,11 @@ export default function CalculatorPageClient({
                   })}
                 </div>
               </div>
+              )}
             </div>
 
             <div className="space-y-6">
+              {isSectionVisible(governmentBenefits) && (
               <div className="bg-gradient-to-br from-green-900/50 to-emerald-900/50 rounded-2xl shadow-lg border-2 border-green-600 overflow-hidden">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-4">
                   <div className="flex items-center gap-3 text-white">
@@ -189,6 +199,7 @@ export default function CalculatorPageClient({
                   </Link>
                 </div>
               </div>
+              )}
 
               <Link href="/calculator" className="block w-full bg-[#2d3544] text-white px-6 py-4 rounded-2xl font-semibold hover:bg-[#3d4759] transition-colors border border-gray-600 text-center">
                 <span className="flex items-center justify-center gap-2">
@@ -198,6 +209,7 @@ export default function CalculatorPageClient({
                 </span>
               </Link>
 
+              {isSectionVisible(specialOffer) && (
               <div className="bg-gradient-to-br from-[#00a69c] to-[#173ab7] rounded-2xl shadow-lg overflow-hidden text-white p-6">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -211,6 +223,7 @@ export default function CalculatorPageClient({
                   </Link>
                 </div>
               </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
-import type { ContentCard, SectionHeader } from "@/lib/page-content";
+import type { ContentCard, SectionHeader, SectionVisibility } from "@/lib/page-content";
 
 export type FaqItem = { question: string; answer: string };
 
-export type SpotlightSection = {
+export type SpotlightSection = SectionVisibility & {
   id?: string;
   title: string;
   subtitle: string;
@@ -21,8 +21,9 @@ export type ServicesContent = {
 };
 
 export type LoanPageContent = {
+  topicTilesSection: SectionVisibility;
   topicTiles: TopicTile[];
-  otherSolutions?: { title: string; cards: ContentCard[] };
+  otherSolutions?: SectionVisibility & { title: string; cards: ContentCard[] };
   spotlightSections: SpotlightSection[];
   whyUs?: SectionHeader & { cards: ContentCard[] };
   benefits: SectionHeader & { cards: ContentCard[] };
@@ -169,6 +170,7 @@ export const DEFAULT_SERVICES_CONTENT: ServicesContent = {
 };
 
 const HOME_LOANS_DEFAULT: LoanPageContent = {
+  topicTilesSection: {},
   topicTiles: [
     {
       title: "Buy First Home",
@@ -309,6 +311,7 @@ function loanDefaults(
   faqSubtitle: string,
 ): LoanPageContent {
   return {
+    topicTilesSection: {},
     topicTiles,
     spotlightSections: [],
     benefits: {
@@ -411,9 +414,12 @@ export function mergeServicesContent(raw?: Partial<ServicesContent>): ServicesCo
 export function mergeLoanPageContent(slug: string, raw?: Partial<LoanPageContent>): LoanPageContent {
   const d = LOAN_PAGE_DEFAULTS[slug] ?? HOME_LOANS_DEFAULT;
   return {
+    topicTilesSection: { ...d.topicTilesSection, ...raw?.topicTilesSection },
     topicTiles: mergeTopicTiles(d.topicTiles, raw?.topicTiles),
     otherSolutions: raw?.otherSolutions ?? d.otherSolutions
       ? {
+          ...(d.otherSolutions ?? { title: "", cards: [] }),
+          ...raw?.otherSolutions,
           title: raw?.otherSolutions?.title ?? d.otherSolutions?.title ?? "",
           cards: mergeCards(d.otherSolutions?.cards ?? [], raw?.otherSolutions?.cards),
         }

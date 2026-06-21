@@ -14,6 +14,7 @@ import {
   type WhyAlsContent,
 } from "@/lib/page-content";
 import { AdminField, SaveButton, inputClass, AdminReadOnlyUrlField } from "@/app/components/admin/AdminForm";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import {
   AdminEditorSaveBar,
   AdminEditorShell,
@@ -26,6 +27,7 @@ import { AdminImagePanelShell, GenericImagePanel, PageHeroImagePanel } from "@/a
 import HomeTestimonialsTab from "@/app/components/admin/home/HomeTestimonialsTab";
 import HomeTeamTab from "@/app/components/admin/home/HomeTeamTab";
 import HomeJobsTab from "@/app/components/admin/home/HomeJobsTab";
+import AboutCrudTab from "@/app/components/admin/about/AboutCrudTab";
 
 type PageSlug = "why-als" | "about" | "careers";
 
@@ -54,8 +56,13 @@ const PAGE_META: Record<
       { id: "vision", label: "Our vision", description: "Vision section with image and story text." },
       { id: "founder", label: "Founder", description: "Founder message and photo." },
       { id: "commitments", label: "Commitments", description: "Core commitment cards." },
-      { id: "team", label: "Team", description: "Team members shown on the about page." },
-      { id: "testimonials", label: "Testimonials", description: "Client reviews on the about page." },
+      { id: "team", label: "Team", description: "Team section heading and member profiles." },
+      { id: "achievements", label: "Achievements", description: "Awards section heading and achievement cards." },
+      { id: "testimonials", label: "Testimonials", description: "Testimonials section heading and client reviews." },
+      { id: "join-team", label: "Join our team", description: "Careers call-to-action banner on the about page." },
+      { id: "giving-back", label: "Giving back", description: "Community involvement section and posts." },
+      { id: "partners", label: "Our partners", description: "Lender panel section heading and partner logos." },
+      { id: "contact", label: "Contact us", description: "Contact section heading and contact details." },
     ],
   },
   careers: {
@@ -222,8 +229,9 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
   if (loading) return <AdminLoading />;
 
-  const crudTabs = ["team", "testimonials", "jobs"];
-  const showSaveBar = !crudTabs.includes(activeTab);
+  const crudTabs = ["team", "testimonials", "jobs", "achievements", "giving-back", "partners"];
+  const showSaveBar =
+    slug === "about" || slug === "why-als" || slug === "careers" || !crudTabs.includes(activeTab);
 
   const imagePanel =
     activeTab === "hero" ? (
@@ -327,6 +335,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "why-als" && activeTab === "reasons" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={whyAls.reasons.isVisible !== false}
+                onChange={(v) => {
+                  setWhyAls({ ...whyAls, reasons: { ...whyAls.reasons, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminSectionFields
                 title={whyAls.reasons.title}
                 subtitle={whyAls.reasons.subtitle ?? ""}
@@ -339,6 +354,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "why-als" && activeTab === "process" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={whyAls.process.isVisible !== false}
+                onChange={(v) => {
+                  setWhyAls({ ...whyAls, process: { ...whyAls.process, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminSectionFields
                 title={whyAls.process.title}
                 subtitle={whyAls.process.subtitle ?? ""}
@@ -368,6 +390,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "why-als" && activeTab === "explore" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={whyAls.explore.isVisible !== false}
+                onChange={(v) => {
+                  setWhyAls({ ...whyAls, explore: { ...whyAls.explore, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminSectionFields
                 title={whyAls.explore.title}
                 subtitle={whyAls.explore.subtitle ?? ""}
@@ -380,6 +409,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "why-als" && activeTab === "cta" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={whyAls.cta.isVisible !== false}
+                onChange={(v) => {
+                  setWhyAls({ ...whyAls, cta: { ...whyAls.cta, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Heading"><input className={inputClass()} value={whyAls.cta.title} onChange={(e) => setWhyAls({ ...whyAls, cta: { ...whyAls.cta, title: e.target.value } })} /></AdminField>
               <AdminField label="Subtitle"><textarea className={inputClass()} rows={3} value={whyAls.cta.subtitle} onChange={(e) => setWhyAls({ ...whyAls, cta: { ...whyAls.cta, subtitle: e.target.value } })} /></AdminField>
               <div className="grid sm:grid-cols-2 gap-4">
@@ -393,6 +429,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "about" && activeTab === "vision" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={about.vision.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, vision: { ...about.vision, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Badge label"><input className={inputClass()} value={about.vision.badge ?? ""} onChange={(e) => setAbout({ ...about, vision: { ...about.vision, badge: e.target.value } })} /></AdminField>
               <AdminField label="Title"><input className={inputClass()} value={about.vision.title} onChange={(e) => setAbout({ ...about, vision: { ...about.vision, title: e.target.value } })} /></AdminField>
               <AdminField label="Body (paragraphs separated by blank lines)"><textarea className={inputClass()} rows={10} value={about.vision.body} onChange={(e) => setAbout({ ...about, vision: { ...about.vision, body: e.target.value } })} /></AdminField>
@@ -405,6 +448,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "about" && activeTab === "founder" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={about.founder.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, founder: { ...about.founder, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Badge"><input className={inputClass()} value={about.founder.badge ?? ""} onChange={(e) => setAbout({ ...about, founder: { ...about.founder, badge: e.target.value } })} /></AdminField>
               <AdminField label="Title"><input className={inputClass()} value={about.founder.title} onChange={(e) => setAbout({ ...about, founder: { ...about.founder, title: e.target.value } })} /></AdminField>
               <AdminField label="Message"><textarea className={inputClass()} rows={8} value={about.founder.body} onChange={(e) => setAbout({ ...about, founder: { ...about.founder, body: e.target.value } })} /></AdminField>
@@ -416,16 +466,278 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "about" && activeTab === "commitments" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={about.commitments.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, commitments: { ...about.commitments, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminSectionFields title={about.commitments.title} subtitle={about.commitments.subtitle ?? ""} onTitleChange={(v) => setAbout({ ...about, commitments: { ...about.commitments, title: v } })} onSubtitleChange={(v) => setAbout({ ...about, commitments: { ...about.commitments, subtitle: v } })} />
               <CardListEditor cards={about.commitments.cards} onChange={(cards) => setAbout({ ...about, commitments: { ...about.commitments, cards } })} />
             </div>
           )}
 
-          {slug === "about" && activeTab === "team" && <HomeTeamTab />}
-          {slug === "about" && activeTab === "testimonials" && <HomeTestimonialsTab />}
+          {slug === "about" && activeTab === "team" && (
+            <div className="space-y-8">
+              <SectionVisibilityField
+                visible={about.team.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, team: { ...about.team, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                titleLabel="Section title"
+                subtitleLabel="Section description"
+                title={about.team.title}
+                subtitle={about.team.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, team: { ...about.team, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, team: { ...about.team, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input
+                  className={inputClass()}
+                  value={about.team.badge ?? ""}
+                  onChange={(e) => setAbout({ ...about, team: { ...about.team, badge: e.target.value } })}
+                />
+              </AdminField>
+              <HomeTeamTab />
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "achievements" && (
+            <div className="space-y-8">
+              <SectionVisibilityField
+                visible={about.achievements.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, achievements: { ...about.achievements, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                title={about.achievements.title}
+                subtitle={about.achievements.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, achievements: { ...about.achievements, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, achievements: { ...about.achievements, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input
+                  className={inputClass()}
+                  value={about.achievements.badge ?? ""}
+                  onChange={(e) => setAbout({ ...about, achievements: { ...about.achievements, badge: e.target.value } })}
+                />
+              </AdminField>
+              <AboutCrudTab
+                apiPath="/admin/awards"
+                itemLabel="Award"
+                empty={{ title: "", year: new Date().getFullYear(), organization: "", description: "", image: "", order: 0, featured: false, isActive: true }}
+                fields={[
+                  { key: "title", label: "Title" },
+                  { key: "year", label: "Year", type: "number" },
+                  { key: "organization", label: "Organization" },
+                  { key: "description", label: "Description", type: "textarea", rows: 3 },
+                  { key: "image", label: "Image URL" },
+                  { key: "order", label: "Display order", type: "number" },
+                  { key: "featured", label: "Featured", type: "checkbox" },
+                  { key: "isActive", label: "Active", type: "checkbox" },
+                ]}
+                getListTitle={(item) => String(item.title ?? "Untitled")}
+                getListSubtitle={(item) => String(item.year ?? "")}
+              />
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "testimonials" && (
+            <div className="space-y-8">
+              <SectionVisibilityField
+                visible={about.testimonials.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, testimonials: { ...about.testimonials, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                title={about.testimonials.title}
+                subtitle={about.testimonials.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, testimonials: { ...about.testimonials, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, testimonials: { ...about.testimonials, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input
+                  className={inputClass()}
+                  value={about.testimonials.badge ?? ""}
+                  onChange={(e) => setAbout({ ...about, testimonials: { ...about.testimonials, badge: e.target.value } })}
+                />
+              </AdminField>
+              <HomeTestimonialsTab />
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "join-team" && (
+            <div className="space-y-1">
+              <SectionVisibilityField
+                visible={about.joinTeam.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, joinTeam: { ...about.joinTeam, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminField label="Heading">
+                <input className={inputClass()} value={about.joinTeam.title} onChange={(e) => setAbout({ ...about, joinTeam: { ...about.joinTeam, title: e.target.value } })} />
+              </AdminField>
+              <AdminField label="Description">
+                <textarea className={inputClass()} rows={4} value={about.joinTeam.subtitle} onChange={(e) => setAbout({ ...about, joinTeam: { ...about.joinTeam, subtitle: e.target.value } })} />
+              </AdminField>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <AdminField label="Button text">
+                  <input className={inputClass()} value={about.joinTeam.buttonText} onChange={(e) => setAbout({ ...about, joinTeam: { ...about.joinTeam, buttonText: e.target.value } })} />
+                </AdminField>
+                <AdminReadOnlyUrlField label="Button link" value={about.joinTeam.buttonLink} />
+              </div>
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "giving-back" && (
+            <div className="space-y-8">
+              <SectionVisibilityField
+                visible={about.givingBack.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, givingBack: { ...about.givingBack, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                title={about.givingBack.title}
+                subtitle={about.givingBack.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, givingBack: { ...about.givingBack, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, givingBack: { ...about.givingBack, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input
+                  className={inputClass()}
+                  value={about.givingBack.badge ?? ""}
+                  onChange={(e) => setAbout({ ...about, givingBack: { ...about.givingBack, badge: e.target.value } })}
+                />
+              </AdminField>
+              <AboutCrudTab
+                apiPath="/admin/community-posts"
+                itemLabel="Community post"
+                empty={{ title: "", image: "", date: "", location: "", order: 0, isActive: true }}
+                fields={[
+                  { key: "title", label: "Title" },
+                  { key: "image", label: "Image URL" },
+                  { key: "date", label: "Date", placeholder: "YYYY-MM-DD" },
+                  { key: "location", label: "Location" },
+                  { key: "order", label: "Display order", type: "number" },
+                  { key: "isActive", label: "Active", type: "checkbox" },
+                ]}
+                getListTitle={(item) => String(item.title ?? "Untitled")}
+                getListSubtitle={(item) => String(item.location ?? "")}
+              />
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "partners" && (
+            <div className="space-y-8">
+              <SectionVisibilityField
+                visible={about.partners.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, partners: { ...about.partners, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                title={about.partners.title}
+                subtitle={about.partners.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, partners: { ...about.partners, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, partners: { ...about.partners, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input
+                  className={inputClass()}
+                  value={about.partners.badge ?? ""}
+                  onChange={(e) => setAbout({ ...about, partners: { ...about.partners, badge: e.target.value } })}
+                />
+              </AdminField>
+              <AboutCrudTab
+                apiPath="/admin/lenders"
+                itemLabel="Lender"
+                defaultImageFolder="als/partners"
+                empty={{ name: "", logo: "", description: "", website: "", order: 0, featured: false, isActive: true }}
+                fields={[
+                  { key: "name", label: "Name" },
+                  {
+                    key: "logo",
+                    label: "Logo",
+                    type: "image",
+                    imageFolder: "als/partners",
+                    imageHint: "Upload a lender logo. PNG with transparency works best.",
+                    aspectClass: "aspect-square max-h-44",
+                    objectFit: "contain",
+                  },
+                  { key: "description", label: "Description", type: "textarea", rows: 2 },
+                  { key: "website", label: "Website URL" },
+                  { key: "order", label: "Display order", type: "number" },
+                  { key: "featured", label: "Featured", type: "checkbox" },
+                  { key: "isActive", label: "Active", type: "checkbox" },
+                ]}
+                getListTitle={(item) => String(item.name ?? "Untitled")}
+                getListImage={(item) => String(item.logo || "") || undefined}
+              />
+            </div>
+          )}
+
+          {slug === "about" && activeTab === "contact" && (
+            <div className="space-y-6">
+              <SectionVisibilityField
+                visible={about.contact.isVisible !== false}
+                onChange={(v) => {
+                  setAbout({ ...about, contact: { ...about.contact, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <AdminSectionFields
+                title={about.contact.title}
+                subtitle={about.contact.subtitle ?? ""}
+                onTitleChange={(v) => setAbout({ ...about, contact: { ...about.contact, title: v } })}
+                onSubtitleChange={(v) => setAbout({ ...about, contact: { ...about.contact, subtitle: v } })}
+              />
+              <AdminField label="Badge label">
+                <input className={inputClass()} value={about.contact.badge ?? ""} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, badge: e.target.value } })} />
+              </AdminField>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <AdminField label="Phone">
+                  <input className={inputClass()} value={about.contact.phone} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, phone: e.target.value } })} />
+                </AdminField>
+                <AdminField label="Email">
+                  <input className={inputClass()} value={about.contact.email} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, email: e.target.value } })} />
+                </AdminField>
+              </div>
+              <AdminField label="Address">
+                <input className={inputClass()} value={about.contact.address} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, address: e.target.value } })} />
+              </AdminField>
+              <AdminField label="Form heading">
+                <input className={inputClass()} value={about.contact.formTitle} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, formTitle: e.target.value } })} />
+              </AdminField>
+              <AdminField label="Success heading">
+                <input className={inputClass()} value={about.contact.successTitle} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, successTitle: e.target.value } })} />
+              </AdminField>
+              <AdminField label="Success message">
+                <textarea className={inputClass()} rows={3} value={about.contact.successMessage} onChange={(e) => setAbout({ ...about, contact: { ...about.contact, successMessage: e.target.value } })} />
+              </AdminField>
+            </div>
+          )}
 
           {slug === "careers" && activeTab === "intro" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={careers.intro.isVisible !== false}
+                onChange={(v) => {
+                  setCareers({ ...careers, intro: { ...careers.intro, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Badge"><input className={inputClass()} value={careers.intro.badge ?? ""} onChange={(e) => setCareers({ ...careers, intro: { ...careers.intro, badge: e.target.value } })} /></AdminField>
               <AdminField label="Title"><input className={inputClass()} value={careers.intro.title} onChange={(e) => setCareers({ ...careers, intro: { ...careers.intro, title: e.target.value } })} /></AdminField>
               <AdminField label="Paragraph 1"><textarea className={inputClass()} rows={3} value={careers.intro.paragraph1} onChange={(e) => setCareers({ ...careers, intro: { ...careers.intro, paragraph1: e.target.value } })} /></AdminField>
@@ -435,6 +747,13 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "careers" && activeTab === "benefits" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={careers.benefits.isVisible !== false}
+                onChange={(v) => {
+                  setCareers({ ...careers, benefits: { ...careers.benefits, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminSectionFields title={careers.benefits.title} subtitle={careers.benefits.subtitle ?? ""} onTitleChange={(v) => setCareers({ ...careers, benefits: { ...careers.benefits, title: v } })} onSubtitleChange={(v) => setCareers({ ...careers, benefits: { ...careers.benefits, subtitle: v } })} />
               <CardListEditor cards={careers.benefits.cards} onChange={(cards) => setCareers({ ...careers, benefits: { ...careers.benefits, cards } })} />
             </div>
@@ -442,15 +761,40 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
 
           {slug === "careers" && activeTab === "nav-cards" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={careers.navCards.isVisible !== false}
+                onChange={(v) => {
+                  setCareers({ ...careers, navCards: { ...careers.navCards, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Section title"><input className={inputClass()} value={careers.navCards.title} onChange={(e) => setCareers({ ...careers, navCards: { ...careers.navCards, title: e.target.value } })} /></AdminField>
               <CardListEditor showLinks cards={careers.navCards.cards} onChange={(cards) => setCareers({ ...careers, navCards: { ...careers.navCards, cards } })} />
             </div>
           )}
 
-          {slug === "careers" && activeTab === "jobs" && <HomeJobsTab />}
+          {slug === "careers" && activeTab === "jobs" && (
+            <div className="space-y-6">
+              <SectionVisibilityField
+                visible={careers.jobs.isVisible !== false}
+                onChange={(v) => {
+                  setCareers({ ...careers, jobs: { ...careers.jobs, isVisible: v } });
+                  setStatus("");
+                }}
+              />
+              <HomeJobsTab />
+            </div>
+          )}
 
           {slug === "careers" && activeTab === "cta" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={careers.cta.isVisible !== false}
+                onChange={(v) => {
+                  setCareers({ ...careers, cta: { ...careers.cta, isVisible: v } });
+                  setStatus("");
+                }}
+              />
               <AdminField label="Heading"><input className={inputClass()} value={careers.cta.title} onChange={(e) => setCareers({ ...careers, cta: { ...careers.cta, title: e.target.value } })} /></AdminField>
               <AdminField label="Subtitle"><textarea className={inputClass()} rows={3} value={careers.cta.subtitle} onChange={(e) => setCareers({ ...careers, cta: { ...careers.cta, subtitle: e.target.value } })} /></AdminField>
               <div className="grid sm:grid-cols-2 gap-4">

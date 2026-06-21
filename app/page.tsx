@@ -5,6 +5,7 @@ import PropertyShowcaseSection from "./components/PropertyShowcaseSection";
 import ContactCTASection from "./components/ContactCTASection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import { getHomepageData, getTestimonialsData } from "@/lib/api-server";
+import { isSectionVisible } from "@/lib/page-content";
 import type { HomeCta } from "@/lib/homepage-content";
 
 export const dynamic = "force-dynamic";
@@ -21,26 +22,34 @@ export default async function HomePage() {
     subtitle?: string;
     imageUrl?: string;
     imageAlt?: string;
+    isVisible?: boolean;
   };
   const services = homeData.services as {
     sectionTitle?: string;
     sectionSubtitle?: string;
+    isVisible?: boolean;
   };
+  const whyChooseUs = homeData.whyChooseUs as { isVisible?: boolean } | undefined;
+  const propertyShowcase = homeData.propertyShowcase as { isVisible?: boolean } | undefined;
+  const testimonialsSection = (homeData as Record<string, unknown>).testimonials as
+    | { isVisible?: boolean }
+    | undefined;
+  const cta = homeData.cta as Partial<HomeCta> | undefined;
 
   return (
     <>
-      <HeroSection hero={hero} />
-      <LendingSolutionsSection services={services} />
-      {homeData.whyChooseUs && (
+      {isSectionVisible(hero) && <HeroSection hero={hero} />}
+      {isSectionVisible(services) && <LendingSolutionsSection services={services} />}
+      {whyChooseUs && isSectionVisible(whyChooseUs) && (
         <WhyChooseUsSection whyChooseUs={homeData.whyChooseUs} />
       )}
-      {homeData.propertyShowcase && (
-        <PropertyShowcaseSection
-          propertyShowcase={homeData.propertyShowcase}
-        />
+      {propertyShowcase && isSectionVisible(propertyShowcase) && (
+        <PropertyShowcaseSection propertyShowcase={homeData.propertyShowcase} />
       )}
-      <TestimonialsSection testimonials={testimonials} />
-      <ContactCTASection cta={homeData.cta as Partial<HomeCta> | undefined} />
+      {isSectionVisible(testimonialsSection) && (
+        <TestimonialsSection testimonials={testimonials} />
+      )}
+      {isSectionVisible(cta) && <ContactCTASection cta={cta} />}
     </>
   );
 }

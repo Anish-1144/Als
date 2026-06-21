@@ -29,6 +29,7 @@ import {
 } from "@/app/components/admin/AdminEditorShell";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import HomeTestimonialsTab from "@/app/components/admin/home/HomeTestimonialsTab";
 import {
   AdminImagePanelShell,
@@ -73,17 +74,22 @@ type HomeForm = {
   heroSubtitle: string;
   heroImageUrl: string;
   heroImageAlt: string;
+  heroVisible: boolean;
   servicesTitle: string;
   servicesSubtitle: string;
+  servicesVisible: boolean;
   serviceCards: ServiceCard[];
   whyTitle: string;
   whySubtitle: string;
   whyImageUrl: string;
+  whyVisible: boolean;
   features: FeatureCard[];
   stats: StatItem[];
   howTitle: string;
   howSubtitle: string;
+  howVisible: boolean;
   steps: HowItWorksStep[];
+  testimonialsVisible: boolean;
   cta: HomeCta;
   isPublished: boolean;
 };
@@ -93,30 +99,36 @@ function isTabId(value: string | null): value is TabId {
 }
 
 function parseHomeForm(d: Record<string, unknown>): HomeForm {
-  const hero = (d.hero as Record<string, string>) ?? {};
+  const hero = (d.hero as Record<string, unknown>) ?? {};
   const services = (d.services as Record<string, unknown>) ?? {};
   const why = (d.whyChooseUs as Record<string, unknown>) ?? {};
   const showcase = (d.propertyShowcase as Record<string, unknown>) ?? {};
+  const testimonials = (d.testimonials as Record<string, unknown>) ?? {};
   const rawCards = services.cards ?? services.services;
 
   return {
-    heroTitle: hero.title ?? "",
-    heroHighlight: hero.titleHighlight ?? "",
-    heroSubtitle: hero.subtitle ?? "",
-    heroImageUrl: hero.imageUrl ?? "/hero.jpg",
-    heroImageAlt: hero.imageAlt ?? "",
+    heroTitle: String(hero.title ?? ""),
+    heroHighlight: String(hero.titleHighlight ?? ""),
+    heroSubtitle: String(hero.subtitle ?? ""),
+    heroImageUrl: String(hero.imageUrl ?? "/hero.jpg"),
+    heroImageAlt: String(hero.imageAlt ?? ""),
+    heroVisible: hero.isVisible !== false,
     servicesTitle: String(services.sectionTitle ?? ""),
     servicesSubtitle: String(services.sectionSubtitle ?? ""),
+    servicesVisible: services.isVisible !== false,
     serviceCards: mergeServiceCards(rawCards),
     whyTitle: String(why.sectionTitle ?? ""),
     whySubtitle: String(why.sectionSubtitle ?? ""),
     whyImageUrl:
       (why.backgroundImage as { url?: string } | undefined)?.url ?? "/section2.jpg",
+    whyVisible: why.isVisible !== false,
     features: mergeFeatureCards(why.features),
     stats: mergeStats(why.stats),
     howTitle: String(showcase.sectionTitle ?? ""),
     howSubtitle: String(showcase.sectionSubtitle ?? ""),
+    howVisible: showcase.isVisible !== false,
     steps: mergeSteps(showcase.steps),
+    testimonialsVisible: testimonials.isVisible !== false,
     cta: mergeCta(d.cta as Partial<HomeCta>),
     isPublished: d.isPublished !== false,
   };
@@ -187,17 +199,20 @@ export default function AdminHomeEditor() {
         subtitle: form.heroSubtitle,
         imageUrl: form.heroImageUrl,
         imageAlt: form.heroImageAlt,
+        isVisible: form.heroVisible,
       },
       services: {
         ...((raw.services as object) ?? {}),
         sectionTitle: form.servicesTitle,
         sectionSubtitle: form.servicesSubtitle,
+        isVisible: form.servicesVisible,
         cards: form.serviceCards,
       },
       whyChooseUs: {
         ...((raw.whyChooseUs as object) ?? {}),
         sectionTitle: form.whyTitle,
         sectionSubtitle: form.whySubtitle,
+        isVisible: form.whyVisible,
         backgroundImage: { url: form.whyImageUrl },
         features: form.features,
         stats: form.stats,
@@ -206,7 +221,12 @@ export default function AdminHomeEditor() {
         ...((raw.propertyShowcase as object) ?? {}),
         sectionTitle: form.howTitle,
         sectionSubtitle: form.howSubtitle,
+        isVisible: form.howVisible,
         steps: form.steps,
+      },
+      testimonials: {
+        ...((raw.testimonials as object) ?? {}),
+        isVisible: form.testimonialsVisible,
       },
       cta: form.cta,
     };
@@ -225,7 +245,7 @@ export default function AdminHomeEditor() {
 
   if (loading || !form) return <AdminLoading />;
 
-  const showSaveBar = activeTab !== "testimonials";
+  const showSaveBar = true;
 
   const imagePanel =
     activeTab === "hero" ? (
@@ -285,6 +305,10 @@ export default function AdminHomeEditor() {
     >
           {activeTab === "hero" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={form.heroVisible}
+                onChange={(v) => patchForm({ heroVisible: v })}
+              />
               <AdminField label="Title">
                 <input
                   className={inputClass()}
@@ -320,6 +344,10 @@ export default function AdminHomeEditor() {
 
           {activeTab === "services" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={form.servicesVisible}
+                onChange={(v) => patchForm({ servicesVisible: v })}
+              />
               <AdminSectionFields
                 title={form.servicesTitle}
                 subtitle={form.servicesSubtitle}
@@ -381,6 +409,10 @@ export default function AdminHomeEditor() {
 
           {activeTab === "why-choose-us" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={form.whyVisible}
+                onChange={(v) => patchForm({ whyVisible: v })}
+              />
               <AdminSectionFields
                 title={form.whyTitle}
                 subtitle={form.whySubtitle}
@@ -471,6 +503,10 @@ export default function AdminHomeEditor() {
 
           {activeTab === "how-it-works" && (
             <div className="space-y-6">
+              <SectionVisibilityField
+                visible={form.howVisible}
+                onChange={(v) => patchForm({ howVisible: v })}
+              />
               <AdminSectionFields
                 title={form.howTitle}
                 subtitle={form.howSubtitle}
@@ -517,10 +553,22 @@ export default function AdminHomeEditor() {
             </div>
           )}
 
-          {activeTab === "testimonials" && <HomeTestimonialsTab />}
+          {activeTab === "testimonials" && (
+            <>
+              <SectionVisibilityField
+                visible={form.testimonialsVisible}
+                onChange={(v) => patchForm({ testimonialsVisible: v })}
+              />
+              <HomeTestimonialsTab />
+            </>
+          )}
 
           {activeTab === "cta" && (
             <div className="space-y-1">
+              <SectionVisibilityField
+                visible={form.cta.isVisible !== false}
+                onChange={(v) => patchForm({ cta: { ...form.cta, isVisible: v } })}
+              />
               <AdminField label="Heading">
                 <input
                   className={inputClass()}

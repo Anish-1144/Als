@@ -4,6 +4,7 @@ import ContactForm from "@/app/components/ContactForm";
 import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { ContactPageContent } from "@/lib/contact-content";
+import { isSectionVisible } from "@/lib/page-content";
 import { FaClock, FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
 type PageHeroData = {
@@ -29,6 +30,7 @@ export default function ContactPageClient({
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16">
             <div className="space-y-8">
+              {isSectionVisible(infoSection) && (
               <div>
                 <h2 className="text-3xl font-besley font-semibold text-white mb-8">{infoSection.title}</h2>
                 <div className="space-y-6">
@@ -93,7 +95,9 @@ export default function ContactPageClient({
                   </div>
                 </div>
               </div>
+              )}
 
+              {isSectionVisible(map) && (
               <div className="mt-8">
                 <h3 className="text-xl font-semibold text-white mb-4">{map.title}</h3>
                 <div className="rounded-xl overflow-hidden shadow-lg h-[300px]">
@@ -109,7 +113,9 @@ export default function ContactPageClient({
                   />
                 </div>
               </div>
+              )}
 
+              {isSectionVisible(whyUs) && (
               <div className="p-6 bg-[#2d3544] rounded-xl border border-gray-600">
                 <h3 className="text-lg font-semibold text-white mb-3">{whyUs.title}</h3>
                 <ul className="space-y-2 text-sm text-gray-300">
@@ -121,8 +127,10 @@ export default function ContactPageClient({
                   ))}
                 </ul>
               </div>
+              )}
             </div>
 
+            {isSectionVisible(formSection) && (
             <div>
               <div className="bg-[#2d3544] rounded-2xl p-8 lg:p-12 shadow-lg">
                 <h2 className="text-2xl font-besley font-semibold text-white mb-2">{formSection.title}</h2>
@@ -130,6 +138,7 @@ export default function ContactPageClient({
                 <ContactForm submitButtonText={formSection.submitButtonText} />
               </div>
             </div>
+            )}
           </div>
         </div>
       </section>

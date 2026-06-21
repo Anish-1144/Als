@@ -1,4 +1,4 @@
-import type { SectionHeader } from "@/lib/page-content";
+import type { SectionHeader, SectionVisibility } from "@/lib/page-content";
 
 export type FaqItem = { question: string; answer: string };
 
@@ -13,7 +13,7 @@ export type ProcessStep = {
 export type HowItWorksContent = {
   processSection: SectionHeader;
   steps: ProcessStep[];
-  stepDetailCta: {
+  stepDetailCta: SectionVisibility & {
     primaryLabel: string;
     primaryLink: string;
     secondaryLabel: string;

@@ -8,6 +8,7 @@ import { useApiList } from "@/lib/hooks/useApiList";
 import { faqSeedData } from "@/lib/mock-data/seed-faqs";
 import { getActiveDocuments } from "@/lib/mock-data";
 import type { ResourceListPageContent } from "@/lib/resources-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaArrowUpRightFromSquare,
   FaChevronDown,
@@ -251,6 +252,7 @@ export default function ResourceListPageClient({
 
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
+          {isSectionVisible(intro) && (
           <div className="text-center mb-16">
             {intro.badge && (
               <div className="inline-flex items-center gap-2 bg-[#2d3544] px-4 py-2 rounded-full mb-6">
@@ -270,11 +272,13 @@ export default function ResourceListPageClient({
               )}
             </div>
           </div>
+          )}
 
           {slug === "faq" ? <FAQAccordion faqs={faqApi.data} /> : <DocumentList documents={docApi.data} />}
         </div>
       </section>
 
+      {isSectionVisible(bottomCta) && (
       <section className="py-16 px-6 md:px-12 lg:px-24 bg-[#00a69c]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-besley font-medium text-white mb-6">{bottomCta.title}</h2>
@@ -289,6 +293,7 @@ export default function ResourceListPageClient({
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

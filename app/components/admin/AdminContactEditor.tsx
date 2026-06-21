@@ -14,6 +14,7 @@ import {
 } from "@/app/components/admin/AdminEditorShell";
 import { AdminImagePanelShell, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 
 const SLUG = "contact";
 
@@ -142,6 +143,7 @@ export default function AdminContactEditor() {
 
           {activeTab === "contact-info" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={content.infoSection.isVisible !== false} onChange={(v) => setContent({ ...content, infoSection: { ...content.infoSection, isVisible: v } })} />
               <AdminField label="Section title"><input className={inputClass()} value={content.infoSection.title} onChange={(e) => setContent({ ...content, infoSection: { ...content.infoSection, title: e.target.value } })} /></AdminField>
               <div className="border border-gray-200 rounded-lg p-4 space-y-3">
                 <p className="font-medium text-gray-800">Phone</p>
@@ -172,6 +174,7 @@ export default function AdminContactEditor() {
 
           {activeTab === "map" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={content.map.isVisible !== false} onChange={(v) => setContent({ ...content, map: { ...content.map, isVisible: v } })} />
               <AdminField label="Map section title"><input className={inputClass()} value={content.map.title} onChange={(e) => setContent({ ...content, map: { ...content.map, title: e.target.value } })} /></AdminField>
               <AdminField label="Google Maps embed URL"><textarea className={inputClass()} rows={4} value={content.map.embedUrl} onChange={(e) => setContent({ ...content, map: { ...content.map, embedUrl: e.target.value } })} /></AdminField>
             </div>
@@ -179,6 +182,7 @@ export default function AdminContactEditor() {
 
           {activeTab === "why-us" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={content.whyUs.isVisible !== false} onChange={(v) => setContent({ ...content, whyUs: { ...content.whyUs, isVisible: v } })} />
               <AdminField label="Title"><input className={inputClass()} value={content.whyUs.title} onChange={(e) => setContent({ ...content, whyUs: { ...content.whyUs, title: e.target.value } })} /></AdminField>
               <AdminField label="Bullet points (one per line)"><textarea className={inputClass()} rows={6} value={itemsToLines(content.whyUs.items)} onChange={(e) => setContent({ ...content, whyUs: { ...content.whyUs, items: linesToItems(e.target.value) } })} /></AdminField>
             </div>
@@ -186,6 +190,7 @@ export default function AdminContactEditor() {
 
           {activeTab === "form" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={content.formSection.isVisible !== false} onChange={(v) => setContent({ ...content, formSection: { ...content.formSection, isVisible: v } })} />
               <AdminField label="Form title"><input className={inputClass()} value={content.formSection.title} onChange={(e) => setContent({ ...content, formSection: { ...content.formSection, title: e.target.value } })} /></AdminField>
               <AdminField label="Form subtitle"><textarea className={inputClass()} rows={3} value={content.formSection.subtitle} onChange={(e) => setContent({ ...content, formSection: { ...content.formSection, subtitle: e.target.value } })} /></AdminField>
               <AdminField label="Submit button text"><input className={inputClass()} value={content.formSection.submitButtonText} onChange={(e) => setContent({ ...content, formSection: { ...content.formSection, submitButtonText: e.target.value } })} /></AdminField>

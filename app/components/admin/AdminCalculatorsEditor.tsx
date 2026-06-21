@@ -24,6 +24,7 @@ import {
 } from "@/app/components/admin/AdminEditorShell";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
+import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import { AdminImagePanelShell, GenericImagePanel, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
 import HomeTeamTab from "@/app/components/admin/home/HomeTeamTab";
 
@@ -249,11 +250,15 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
           )}
 
           {isHub && activeTab === "calculators" && (
-            <CardListEditor showLinks cards={hubContent.calculatorCards} onChange={(calculatorCards) => setHubContent({ ...hubContent, calculatorCards })} />
+            <>
+              <SectionVisibilityField visible={hubContent.calculatorCardsSection.isVisible !== false} onChange={(v) => setHubContent({ ...hubContent, calculatorCardsSection: { ...hubContent.calculatorCardsSection, isVisible: v } })} />
+              <CardListEditor showLinks cards={hubContent.calculatorCards} onChange={(calculatorCards) => setHubContent({ ...hubContent, calculatorCards })} />
+            </>
           )}
 
           {isHub && activeTab === "founder" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={hubContent.founderSpotlight.isVisible !== false} onChange={(v) => setHubContent({ ...hubContent, founderSpotlight: { ...hubContent.founderSpotlight, isVisible: v } })} />
               <AdminField label="Badge"><input className={inputClass()} value={hubContent.founderSpotlight.badge} onChange={(e) => setHubContent({ ...hubContent, founderSpotlight: { ...hubContent.founderSpotlight, badge: e.target.value } })} /></AdminField>
               <AdminField label="Name"><input className={inputClass()} value={hubContent.founderSpotlight.name} onChange={(e) => setHubContent({ ...hubContent, founderSpotlight: { ...hubContent.founderSpotlight, name: e.target.value } })} /></AdminField>
               <AdminField label="Role"><input className={inputClass()} value={hubContent.founderSpotlight.role} onChange={(e) => setHubContent({ ...hubContent, founderSpotlight: { ...hubContent.founderSpotlight, role: e.target.value } })} /></AdminField>
@@ -267,6 +272,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {isHub && activeTab === "team" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={hubContent.teamSection.isVisible !== false} onChange={(v) => setHubContent({ ...hubContent, teamSection: { ...hubContent.teamSection, isVisible: v } })} />
               <AdminSectionFields title={hubContent.teamSection.title} subtitle={hubContent.teamSection.subtitle ?? ""} onTitleChange={(v) => setHubContent({ ...hubContent, teamSection: { ...hubContent.teamSection, title: v } })} onSubtitleChange={(v) => setHubContent({ ...hubContent, teamSection: { ...hubContent.teamSection, subtitle: v } })} />
               <HomeTeamTab />
             </div>
@@ -274,6 +280,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {!isHub && activeTab === "calculator" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={toolContent.pageHeader.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, pageHeader: { ...toolContent.pageHeader, isVisible: v } })} />
               <AdminField label="Page title"><input className={inputClass()} value={toolContent.pageHeader.title} onChange={(e) => setToolContent({ ...toolContent, pageHeader: { ...toolContent.pageHeader, title: e.target.value } })} /></AdminField>
               <AdminField label="Page subtitle"><textarea className={inputClass()} rows={3} value={toolContent.pageHeader.subtitle} onChange={(e) => setToolContent({ ...toolContent, pageHeader: { ...toolContent.pageHeader, subtitle: e.target.value } })} /></AdminField>
               <AdminField label="Iframe URL"><input className={inputClass()} value={toolContent.iframe.src} onChange={(e) => setToolContent({ ...toolContent, iframe: { ...toolContent.iframe, src: e.target.value } })} /></AdminField>
@@ -286,6 +293,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {!isHub && activeTab === "disclaimer" && (
             <div className="space-y-4">
+              <SectionVisibilityField visible={toolContent.disclaimer.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, disclaimer: { ...toolContent.disclaimer, isVisible: v } })} />
               <AdminField label="Title"><input className={inputClass()} value={toolContent.disclaimer.title} onChange={(e) => setToolContent({ ...toolContent, disclaimer: { ...toolContent.disclaimer, title: e.target.value } })} /></AdminField>
               <AdminField label="Body"><textarea className={inputClass()} rows={5} value={toolContent.disclaimer.body} onChange={(e) => setToolContent({ ...toolContent, disclaimer: { ...toolContent.disclaimer, body: e.target.value } })} /></AdminField>
             </div>
@@ -293,6 +301,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {!isHub && activeTab === "info" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={toolContent.infoSection.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, infoSection: { ...toolContent.infoSection, isVisible: v } })} />
               <AdminField label="Section title"><input className={inputClass()} value={toolContent.infoSection.title} onChange={(e) => setToolContent({ ...toolContent, infoSection: { ...toolContent.infoSection, title: e.target.value } })} /></AdminField>
               <AdminField label="Intro"><textarea className={inputClass()} rows={4} value={toolContent.infoSection.intro} onChange={(e) => setToolContent({ ...toolContent, infoSection: { ...toolContent.infoSection, intro: e.target.value } })} /></AdminField>
 
@@ -341,6 +350,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {!isHub && activeTab === "resources" && (
             <div className="space-y-6">
+              <SectionVisibilityField visible={toolContent.resourcesSection.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, resourcesSection: { ...toolContent.resourcesSection, isVisible: v } })} />
               <AdminSectionFields title={toolContent.resourcesSection.title} subtitle={toolContent.resourcesSection.subtitle ?? ""} onTitleChange={(v) => setToolContent({ ...toolContent, resourcesSection: { ...toolContent.resourcesSection, title: v } })} onSubtitleChange={(v) => setToolContent({ ...toolContent, resourcesSection: { ...toolContent.resourcesSection, subtitle: v } })} />
               <CardListEditor showLinks cards={toolContent.resourcesSection.cards} onChange={(cards) => setToolContent({ ...toolContent, resourcesSection: { ...toolContent.resourcesSection, cards } })} />
             </div>
@@ -348,6 +358,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
 
           {!isHub && activeTab === "sidebar" && (
             <div className="space-y-8">
+              <SectionVisibilityField visible={toolContent.governmentBenefits.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, governmentBenefits: { ...toolContent.governmentBenefits, isVisible: v } })} />
               <div className="space-y-4">
                 <h3 className="font-semibold text-[#1d293d]">Government benefits</h3>
                 <AdminField label="Card title"><input className={inputClass()} value={toolContent.governmentBenefits.title} onChange={(e) => setToolContent({ ...toolContent, governmentBenefits: { ...toolContent.governmentBenefits, title: e.target.value } })} /></AdminField>
@@ -361,6 +372,7 @@ export default function AdminCalculatorsEditor({ slug }: { slug: CalculatorSlug 
                   <AdminReadOnlyUrlField label="CTA link" value={toolContent.governmentBenefits.ctaLink} />
                 </div>
               </div>
+              <SectionVisibilityField visible={toolContent.specialOffer.isVisible !== false} onChange={(v) => setToolContent({ ...toolContent, specialOffer: { ...toolContent.specialOffer, isVisible: v } })} />
               <div className="space-y-4 pt-6 border-t border-gray-100">
                 <h3 className="font-semibold text-[#1d293d]">Special offer</h3>
                 <AdminField label="Title"><input className={inputClass()} value={toolContent.specialOffer.title} onChange={(e) => setToolContent({ ...toolContent, specialOffer: { ...toolContent.specialOffer, title: e.target.value } })} /></AdminField>

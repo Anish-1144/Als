@@ -5,6 +5,7 @@ import PageHero from "@/app/components/PageHero";
 import ContactCTASection from "@/app/components/ContactCTASection";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { GuidePageContent } from "@/lib/resources-content";
+import { isSectionVisible } from "@/lib/page-content";
 import {
   FaArrowRight,
   FaBuilding,
@@ -47,7 +48,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
 
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-4xl mx-auto">
-          {content.introParagraphs.length > 0 && (
+          {isSectionVisible(content.introSection) && content.introParagraphs.length > 0 && (
             <div className="prose prose-lg max-w-none mb-16">
               {content.introParagraphs.map((p, i) => (
                 <p key={i} className={`text-xl text-gray-200 leading-relaxed ${i < content.introParagraphs.length - 1 ? "mb-6" : ""}`}>
@@ -57,7 +58,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
             </div>
           )}
 
-          {content.sections.map((section, sIndex) => {
+          {content.sections.filter(isSectionVisible).map((section, sIndex) => {
             const Icon = SECTION_ICONS[sIndex] ?? FaHouse;
             return (
               <div key={sIndex} className="mb-16">
@@ -120,7 +121,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
             );
           })}
 
-          {content.closingBlock && (
+          {content.closingBlock && isSectionVisible(content.closingBlock) && (
             <div className="bg-gradient-to-br from-[#2d3544] to-[#1d293d] rounded-2xl p-8 md:p-12 border border-gray-700">
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-besley font-semibold text-white mb-6">{content.closingBlock.title}</h2>
@@ -142,7 +143,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
         </div>
       </section>
 
-      {content.statsSection && content.statsSection.cards.length > 0 && (
+      {content.statsSection && isSectionVisible(content.statsSection) && content.statsSection.cards.length > 0 && (
         <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#e6e5e3]">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
@@ -167,7 +168,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
         </section>
       )}
 
-      {content.bottomCta && (
+      {content.bottomCta && isSectionVisible(content.bottomCta) && (
         <section className="py-20 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[#384252] to-[#1d293d]">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-besley font-semibold text-white mb-6">{content.bottomCta.title}</h2>
@@ -185,7 +186,7 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
         </section>
       )}
 
-      {content.relatedGuides && content.relatedGuides.cards.length > 0 && (
+      {content.relatedGuides && isSectionVisible(content.relatedGuides) && content.relatedGuides.cards.length > 0 && (
         <section className="py-16 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
           <div className="max-w-6xl mx-auto">
             <h3 className="text-2xl font-besley font-semibold text-white mb-8 text-center">{content.relatedGuides.title}</h3>
