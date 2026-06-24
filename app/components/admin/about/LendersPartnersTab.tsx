@@ -20,11 +20,15 @@ type LenderItem = {
 type LendersPartnersTabProps = {
   showLogoBorders: boolean;
   onShowLogoBordersChange: (value: boolean) => void;
+  showLogoBackground: boolean;
+  onShowLogoBackgroundChange: (value: boolean) => void;
 };
 
 export default function LendersPartnersTab({
   showLogoBorders,
   onShowLogoBordersChange,
+  showLogoBackground,
+  onShowLogoBackgroundChange,
 }: LendersPartnersTabProps) {
   const [syncing, setSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState("");
@@ -66,6 +70,19 @@ export default function LendersPartnersTab({
     <div className="space-y-6">
       <div>
         <AdminSectionVisibilityToggle
+          visible={showLogoBackground}
+          onChange={onShowLogoBackgroundChange}
+          label="Show card background behind logos"
+          description={
+            showLogoBackground
+              ? "Each lender logo sits on a dark card background."
+              : "Logos display without a card background — transparent icons only."
+          }
+        />
+      </div>
+
+      <div>
+        <AdminSectionVisibilityToggle
           visible={showLogoBorders}
           onChange={handleBorderToggle}
           label="Show teal border on lender logos"
@@ -83,7 +100,7 @@ export default function LendersPartnersTab({
       </div>
 
       <AboutCrudTab<LenderItem>
-        key={showLogoBorders ? "borders-on" : "borders-off"}
+        key={`${showLogoBorders ? "borders-on" : "borders-off"}-${showLogoBackground ? "bg-on" : "bg-off"}`}
         apiPath="/admin/lenders"
         itemLabel="Lender"
         defaultImageFolder="als/partners"
@@ -119,6 +136,7 @@ export default function LendersPartnersTab({
         getListImage={(item) => String(item.logo || "") || undefined}
         getListImageBorder={(item) => showLogoBorders && item.showBorder !== false}
         previewImageBorder={showLogoBorders}
+        previewImageBackground={showLogoBackground}
       />
     </div>
   );

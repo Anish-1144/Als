@@ -107,6 +107,7 @@ export default function AboutPageClient({
     .slice(0, 12);
 
   const partnersShowBorders = pageContent.partners.showLogoBorders !== false;
+  const partnersShowBackground = pageContent.partners.showLogoBackground !== false;
 
   const lenderHasBorder = (lender: (typeof sortedLenders)[number]) =>
     partnersShowBorders && lender.showBorder !== false;
@@ -837,9 +838,11 @@ export default function AboutPageClient({
               {sortedLenders.map((lender, index) => (
                 <article
                   key={lender.id || index}
-                  className={`w-full overflow-hidden rounded-lg bg-[#1d293d] shadow-md transition-all hover:shadow-xl ${
-                    lenderHasBorder(lender) ? "ring-2 ring-[#00a69c]" : ""
-                  }`}
+                  className={`w-full overflow-hidden rounded-lg transition-all ${
+                    partnersShowBackground
+                      ? "bg-[#1d293d] shadow-md hover:shadow-xl"
+                      : "bg-transparent"
+                  } ${lenderHasBorder(lender) ? "ring-2 ring-[#00a69c]" : ""}`}
                 >
                   <div className="flex aspect-[4/3] w-full items-center justify-center p-2.5 sm:p-3">
                     {lender.logo ? (

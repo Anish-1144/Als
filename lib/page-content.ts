@@ -67,7 +67,7 @@ export type AboutContent = {
     buttonLink: string;
   };
   givingBack: SectionHeader;
-  partners: SectionHeader & { showLogoBorders?: boolean };
+  partners: SectionHeader & { showLogoBorders?: boolean; showLogoBackground?: boolean };
   contact: SectionHeader & {
     phone: string;
     email: string;
@@ -295,6 +295,7 @@ Importantly, we also connect our clients to other relevant solutions providers, 
     subtitle:
       "We work with a diverse panel of lenders to find the perfect loan solution for you.",
     showLogoBorders: true,
+    showLogoBackground: true,
   },
   contact: {
     badge: "CONTACT US",

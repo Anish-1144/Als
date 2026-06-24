@@ -30,6 +30,7 @@ type AboutCrudTabProps<T extends Record<string, unknown>> = {
   getListImage?: (item: T) => string | undefined;
   getListImageBorder?: (item: T) => boolean;
   previewImageBorder?: boolean;
+  previewImageBackground?: boolean;
   defaultImageFolder?: string;
 };
 
@@ -43,6 +44,7 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
   getListImage,
   getListImageBorder,
   previewImageBorder = false,
+  previewImageBackground = true,
   defaultImageFolder = "als/uploads",
 }: AboutCrudTabProps<T>) {
   const [items, setItems] = useState<T[]>([]);
@@ -174,7 +176,11 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
                     onChange={(url) => patchField(field.key, url)}
                     folder={field.imageFolder ?? defaultImageFolder}
                     hint={field.imageHint}
-                    aspectClass={field.aspectClass ?? "aspect-square max-h-40"}
+                    aspectClass={
+                      field.key === "logo" && !previewImageBackground
+                        ? "aspect-square max-h-40 bg-[#2d3544]"
+                        : field.aspectClass ?? "aspect-square max-h-40"
+                    }
                     objectFit={field.objectFit ?? "contain"}
                     compact
                   />
@@ -232,9 +238,9 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
                 <img
                   src={getListImage(item)}
                   alt=""
-                  className={`h-10 w-10 shrink-0 rounded-lg border border-slate-200 bg-[#1d293d] object-contain p-1 ${
-                    getListImageBorder?.(item) ? "ring-2 ring-[#00a69c]" : ""
-                  }`}
+                  className={`h-10 w-10 shrink-0 rounded-lg border border-slate-200 object-contain p-1 ${
+                    previewImageBackground !== false ? "bg-[#1d293d]" : "bg-transparent"
+                  } ${getListImageBorder?.(item) ? "ring-2 ring-[#00a69c]" : ""}`}
                 />
               )}
               <div className="min-w-0">

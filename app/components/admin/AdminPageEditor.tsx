@@ -670,6 +670,14 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
                   });
                   setStatus("");
                 }}
+                showLogoBackground={about.partners.showLogoBackground !== false}
+                onShowLogoBackgroundChange={(showLogoBackground) => {
+                  setAbout({
+                    ...about,
+                    partners: { ...about.partners, showLogoBackground },
+                  });
+                  setStatus("");
+                }}
               />
             </div>
           )}
