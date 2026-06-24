@@ -27,6 +27,8 @@ type AboutCrudTabProps<T extends Record<string, unknown>> = {
   getListTitle: (item: T) => string;
   getListSubtitle?: (item: T) => string;
   getListImage?: (item: T) => string | undefined;
+  getListImageBorder?: (item: T) => boolean;
+  previewImageBorder?: boolean;
   defaultImageFolder?: string;
 };
 
@@ -38,6 +40,8 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
   getListTitle,
   getListSubtitle,
   getListImage,
+  getListImageBorder,
+  previewImageBorder = false,
   defaultImageFolder = "als/uploads",
 }: AboutCrudTabProps<T>) {
   const [items, setItems] = useState<T[]>([]);
@@ -139,15 +143,23 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
                   {field.label}
                 </label>
               ) : field.type === "image" ? (
-                <CloudinaryImageField
-                  value={String(editing[field.key] ?? "")}
-                  onChange={(url) => patchField(field.key, url)}
-                  folder={field.imageFolder ?? defaultImageFolder}
-                  hint={field.imageHint}
-                  aspectClass={field.aspectClass ?? "aspect-square max-h-40"}
-                  objectFit={field.objectFit ?? "contain"}
-                  compact
-                />
+                <div
+                  className={
+                    field.key === "logo" && previewImageBorder
+                      ? "rounded-xl ring-2 ring-[#00a69c]"
+                      : undefined
+                  }
+                >
+                  <CloudinaryImageField
+                    value={String(editing[field.key] ?? "")}
+                    onChange={(url) => patchField(field.key, url)}
+                    folder={field.imageFolder ?? defaultImageFolder}
+                    hint={field.imageHint}
+                    aspectClass={field.aspectClass ?? "aspect-square max-h-40"}
+                    objectFit={field.objectFit ?? "contain"}
+                    compact
+                  />
+                </div>
               ) : (
                 <input
                   className={inputClass()}
@@ -201,7 +213,9 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
                 <img
                   src={getListImage(item)}
                   alt=""
-                  className="h-10 w-10 shrink-0 rounded-lg border border-slate-200 bg-white object-contain p-1"
+                  className={`h-10 w-10 shrink-0 rounded-lg border border-slate-200 bg-[#1d293d] object-contain p-1 ${
+                    getListImageBorder?.(item) ? "ring-2 ring-[#00a69c]" : ""
+                  }`}
                 />
               )}
               <div className="min-w-0">

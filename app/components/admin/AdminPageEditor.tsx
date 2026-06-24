@@ -28,6 +28,7 @@ import HomeTestimonialsTab from "@/app/components/admin/home/HomeTestimonialsTab
 import HomeTeamTab from "@/app/components/admin/home/HomeTeamTab";
 import HomeJobsTab from "@/app/components/admin/home/HomeJobsTab";
 import AboutCrudTab from "@/app/components/admin/about/AboutCrudTab";
+import LendersPartnersTab from "@/app/components/admin/about/LendersPartnersTab";
 
 type PageSlug = "why-als" | "about" | "careers";
 
@@ -660,30 +661,15 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
                   onChange={(e) => setAbout({ ...about, partners: { ...about.partners, badge: e.target.value } })}
                 />
               </AdminField>
-              <AboutCrudTab
-                apiPath="/admin/lenders"
-                itemLabel="Lender"
-                defaultImageFolder="als/partners"
-                empty={{ name: "", logo: "", description: "", website: "", order: 0, featured: false, isActive: true }}
-                fields={[
-                  { key: "name", label: "Name" },
-                  {
-                    key: "logo",
-                    label: "Logo",
-                    type: "image",
-                    imageFolder: "als/partners",
-                    imageHint: "Upload a lender logo. PNG with transparency works best.",
-                    aspectClass: "aspect-square max-h-44",
-                    objectFit: "contain",
-                  },
-                  { key: "description", label: "Description", type: "textarea", rows: 2 },
-                  { key: "website", label: "Website URL" },
-                  { key: "order", label: "Display order", type: "number" },
-                  { key: "featured", label: "Featured", type: "checkbox" },
-                  { key: "isActive", label: "Active", type: "checkbox" },
-                ]}
-                getListTitle={(item) => String(item.name ?? "Untitled")}
-                getListImage={(item) => String(item.logo || "") || undefined}
+              <LendersPartnersTab
+                showLogoBorders={about.partners.showLogoBorders !== false}
+                onShowLogoBordersChange={(showLogoBorders) => {
+                  setAbout({
+                    ...about,
+                    partners: { ...about.partners, showLogoBorders },
+                  });
+                  setStatus("");
+                }}
               />
             </div>
           )}

@@ -7,6 +7,7 @@ export interface ILender extends Document {
   website?: string;
   category?: string;
   featured?: boolean;
+  showBorder?: boolean;
   order?: number;
   isActive: boolean;
 }
@@ -20,6 +21,7 @@ const lenderSchema = new Schema<ILender>(
     category: String,
     order: { type: Number, default: 0 },
     featured: Boolean,
+    showBorder: Boolean,
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },

@@ -83,6 +83,7 @@ export const lendersData = [
     category: "major-bank",
     order: 1,
     featured: true,
+    showBorder: true,
     isActive: true,
   },
   {
@@ -92,6 +93,7 @@ export const lendersData = [
     category: "major-bank",
     order: 2,
     featured: true,
+    showBorder: true,
     isActive: true,
   },
   {
@@ -101,6 +103,7 @@ export const lendersData = [
     category: "major-bank",
     order: 3,
     featured: true,
+    showBorder: true,
     isActive: true,
   },
   {
@@ -110,6 +113,7 @@ export const lendersData = [
     category: "major-bank",
     order: 4,
     featured: true,
+    showBorder: true,
     isActive: true,
   },
   {
@@ -119,6 +123,7 @@ export const lendersData = [
     category: "non-bank",
     order: 5,
     featured: false,
+    showBorder: false,
     isActive: true,
   },
   {
@@ -128,6 +133,7 @@ export const lendersData = [
     category: "non-bank",
     order: 6,
     featured: false,
+    showBorder: false,
     isActive: true,
   },
 ];

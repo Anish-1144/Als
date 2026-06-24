@@ -59,7 +59,6 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
-  const [wasSubmittedOnLoad, setWasSubmittedOnLoad] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   const dataToUse = popupData || defaultPopupData;
@@ -72,35 +71,26 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
 
   useEffect(() => {
     const submitted = readSubmittedFlag();
-    setWasSubmittedOnLoad(submitted);
     setAlreadySubmitted(submitted);
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated || !dataToUse.isEnabled || hasShown) return;
+    if (!hydrated || !dataToUse.isEnabled || hasShown || readSubmittedFlag()) return;
 
     const timer = setTimeout(() => {
       setIsVisible(true);
       setHasShown(true);
-      if (readSubmittedFlag() && assessmentEnabled) {
-        setSubmitStatus("success");
-      }
     }, dataToUse.showDelay);
 
     return () => clearTimeout(timer);
-  }, [hydrated, dataToUse.isEnabled, dataToUse.showDelay, hasShown, assessmentEnabled]);
+  }, [hydrated, dataToUse.isEnabled, dataToUse.showDelay, hasShown]);
 
   function handleClose() {
     setIsVisible(false);
   }
 
   function handlePrimary() {
-    if (alreadySubmitted && assessmentEnabled) {
-      setSubmitStatus("success");
-      setShowForm(false);
-      return;
-    }
     if (assessmentEnabled) {
       setShowForm(true);
     } else {
@@ -234,7 +224,7 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
     );
   }
 
-  function ThankYouView({ returning }: { returning?: boolean }) {
+  function ThankYouView() {
     return (
       <div className="px-1 py-2 text-center">
         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 ring-1 ring-emerald-400/30">
@@ -243,15 +233,10 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
         <h3 className="mb-3 text-2xl font-bold text-white">
           {assessment?.successTitle || "Thank you!"}
         </h3>
-        <p className="mb-2 leading-relaxed text-slate-400">
+        <p className="mb-6 leading-relaxed text-slate-400">
           {assessment?.successMessage ||
             "Your request has been received. We'll be in touch shortly."}
         </p>
-        {returning && (
-          <p className="mb-6 text-sm text-slate-500">
-            You&apos;ve already submitted your assessment. Our team will contact you soon.
-          </p>
-        )}
         <button
           type="button"
           onClick={handleClose}
@@ -298,7 +283,7 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
             </button>
 
             {showThankYouPanel ? (
-              <ThankYouView returning={wasSubmittedOnLoad} />
+              <ThankYouView />
             ) : showFormPanel ? (
               <div>
                 <div className="mb-6 border-b border-slate-600/40 pb-5 text-center">
@@ -377,9 +362,7 @@ export default function WebsitePopup({ popupData }: WebsitePopupProps) {
                     onClick={handlePrimary}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#00a69c] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#008f86]"
                   >
-                    {alreadySubmitted && assessmentEnabled
-                      ? "View confirmation"
-                      : dataToUse.buttonText}
+                    {dataToUse.buttonText}
                     <FaArrowRight className="h-4 w-4" />
                   </button>
 

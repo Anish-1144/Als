@@ -106,6 +106,11 @@ export default function AboutPageClient({
     })
     .slice(0, 12);
 
+  const partnersShowBorders = pageContent.partners.showLogoBorders !== false;
+
+  const lenderHasBorder = (lender: (typeof sortedLenders)[number]) =>
+    partnersShowBorders && lender.showBorder !== false;
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex gap-1">
@@ -807,7 +812,7 @@ export default function AboutPageClient({
         id="lenders"
         className="py-20 px-6 md:px-12 lg:px-24 bg-[#2d3544]"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto w-full max-w-7xl">
           <div className="text-center mb-16">
             {pageContent.partners.badge && (
               <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
@@ -828,13 +833,15 @@ export default function AboutPageClient({
           </div>
 
           {sortedLenders.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 md:gap-5">
               {sortedLenders.map((lender, index) => (
-                <div
+                <article
                   key={lender.id || index}
-                  className={`bg-[#1d293d] rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden ${lender.featured ? "ring-2 ring-[#00a69c]" : ""}`}
+                  className={`w-full overflow-hidden rounded-lg bg-[#1d293d] shadow-md transition-all hover:shadow-xl ${
+                    lenderHasBorder(lender) ? "ring-2 ring-[#00a69c]" : ""
+                  }`}
                 >
-                  <div className="aspect-square bg-[#1d293d] p-4 flex items-center justify-center border-b border-gray-600">
+                  <div className="flex aspect-[4/3] w-full items-center justify-center p-2.5 sm:p-3">
                     {lender.logo ? (
                       <img
                         src={lender.logo}
@@ -850,7 +857,7 @@ export default function AboutPageClient({
                       </div>
                     )}
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           ) : (
