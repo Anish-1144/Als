@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Lead } from "../models/Lead.js";
 import { JobApplication } from "../models/JobApplication.js";
 import { JobPosting } from "../models/JobPosting.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ok, fail } from "../utils/response.js";
 
 const router = Router();
@@ -18,7 +19,7 @@ const contactSchema = z.object({
   preferredContact: z.string().optional(),
 });
 
-router.post("/contact", async (req, res) => {
+router.post("/contact", asyncHandler(async (req, res) => {
   const parsed = contactSchema.safeParse(req.body);
   if (!parsed.success) {
     return fail(res, 400, "VALIDATION_ERROR", "Valid email is required");
@@ -40,9 +41,9 @@ router.post("/contact", async (req, res) => {
     payload: req.body,
   });
   return ok(res, { id: lead.id, message: "Thank you — we will be in touch soon." });
-});
+}));
 
-router.post("/consultation", async (req, res) => {
+router.post("/consultation", asyncHandler(async (req, res) => {
   const parsed = contactSchema
     .extend({
       consultationType: z.string().optional(),
@@ -70,9 +71,9 @@ router.post("/consultation", async (req, res) => {
     payload: req.body,
   });
   return ok(res, { id: lead.id, message: "Consultation request received." });
-});
+}));
 
-router.post("/assessment", async (req, res) => {
+router.post("/assessment", asyncHandler(async (req, res) => {
   const body = (req.body ?? {}) as Record<string, unknown>;
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : undefined);
 
@@ -102,7 +103,7 @@ router.post("/assessment", async (req, res) => {
     id: lead.id,
     message: "Thank you — your assessment request has been received.",
   });
-});
+}));
 
 const applySchema = z.object({
   jobPosting: z.string().optional(),
@@ -115,7 +116,7 @@ const applySchema = z.object({
   linkedIn: z.string().optional(),
 });
 
-router.post("/careers/apply", async (req, res) => {
+router.post("/careers/apply", asyncHandler(async (req, res) => {
   const parsed = applySchema.safeParse(req.body);
   if (!parsed.success) {
     return fail(res, 400, "VALIDATION_ERROR", "Name, email, and resume are required");
@@ -140,6 +141,6 @@ router.post("/careers/apply", async (req, res) => {
     linkedIn: parsed.data.linkedIn,
   });
   return ok(res, { id: app.id, message: "Application submitted successfully." });
-});
+}));
 
 export default router;

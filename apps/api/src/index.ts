@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import { env } from "./config/env.js";
 import { isCloudinaryConfigured } from "./lib/cloudinary.js";
 import { connectDb } from "./db/connect.js";
-import { errorHandler } from "./middleware/errorHandler.js";
+import { errorHandler, registerProcessErrorHandlers } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.js";
 import publicRoutes from "./routes/public.js";
 import leadsRoutes from "./routes/leads.js";
@@ -92,7 +92,17 @@ v1.use(
 );
 
 app.use("/api/v1", v1);
+
+app.use((_req, res) => {
+  res.status(404).json({
+    success: false,
+    error: { code: "NOT_FOUND", message: "Route not found" },
+  });
+});
+
 app.use(errorHandler);
+
+registerProcessErrorHandlers();
 
 async function start() {
   await connectDb();

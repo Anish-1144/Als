@@ -41,10 +41,9 @@ export default function LendersPartnersTab({
     await Promise.all(
       res.data.map((lender) => {
         if (!lender._id) return Promise.resolve();
-        const { _id, ...body } = lender;
-        return clientApi(`/admin/lenders/${_id}`, {
+        return clientApi(`/admin/lenders/${lender._id}`, {
           method: "PUT",
-          body: JSON.stringify({ ...body, showBorder: enabled }),
+          body: JSON.stringify({ showBorder: enabled }),
         });
       }),
     );
@@ -99,11 +98,12 @@ export default function LendersPartnersTab({
           isActive: true,
         }}
         fields={[
-          { key: "name", label: "Name" },
+          { key: "name", label: "Name", required: true },
           {
             key: "logo",
             label: "Logo",
             type: "image",
+            required: true,
             imageFolder: "als/partners",
             imageHint: "Upload a lender logo. PNG with transparency works best.",
             aspectClass: "aspect-square max-h-44",

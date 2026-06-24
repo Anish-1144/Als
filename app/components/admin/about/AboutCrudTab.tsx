@@ -13,6 +13,7 @@ type FieldDef = {
   type?: "text" | "textarea" | "number" | "checkbox" | "image";
   rows?: number;
   placeholder?: string;
+  required?: boolean;
   imageFolder?: string;
   imageHint?: string;
   aspectClass?: string;
@@ -68,24 +69,42 @@ export default function AboutCrudTab<T extends Record<string, unknown> & { _id?:
 
   async function save() {
     if (!editing) return;
+
+    for (const field of fields) {
+      if (!field.required) continue;
+      const value = editing[field.key];
+      if (field.type === "checkbox") continue;
+      if (value === undefined || value === null || String(value).trim() === "") {
+        setStatus(`${field.label} is required`);
+        return;
+      }
+    }
+
     setSaving(true);
     setStatus("Saving...");
     const id = editing._id;
     const { _id, ...body } = editing;
+    const payload = Object.fromEntries(
+      Object.entries(body).filter(
+        ([key]) => !["__v", "createdAt", "updatedAt", "id"].includes(key),
+      ),
+    );
     const res = id
       ? await clientApi(`${apiPath}/${id}`, {
           method: "PUT",
-          body: JSON.stringify(body),
+          body: JSON.stringify(payload),
         })
       : await clientApi(apiPath, {
           method: "POST",
-          body: JSON.stringify(body),
+          body: JSON.stringify(payload),
         });
     setSaving(false);
-    setStatus(res.success ? "Saved!" : (res.error?.message ?? "Failed"));
     if (res.success) {
+      setStatus("Saved!");
       setEditing(null);
       await load();
+    } else {
+      setStatus(res.error?.message ?? "Failed to save. Check required fields.");
     }
   }
 
