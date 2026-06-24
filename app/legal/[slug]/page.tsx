@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getPageData } from "@/lib/api-server";
 import { LEGAL_SLUGS, mergeLegalPageContent, type LegalSlug } from "@/lib/legal-content";
+import { mergePageHeroData } from "@/lib/page-hero";
 import LegalPageClient from "@/app/components/legal/LegalPageClient";
 
 function isLegalSlug(slug: string): slug is LegalSlug {
@@ -18,22 +19,16 @@ export default async function LegalPage({
   const page = await getPageData(slug);
   const content = mergeLegalPageContent(
     slug,
-    (page as { content?: Record<string, unknown> } | null)?.content as Parameters<typeof mergeLegalPageContent>[1],
+    (page as { content?: Record<string, unknown> } | null)?.content as Parameters<
+      typeof mergeLegalPageContent
+    >[1],
   );
 
   return (
     <LegalPageClient
       slug={slug}
       content={content}
-      pageData={
-        page
-          ? {
-              heroTitle: String(page.heroTitle ?? ""),
-              heroSubtitle: String(page.heroSubtitle ?? ""),
-              heroBackgroundImage: String(page.heroBackgroundImage ?? ""),
-            }
-          : null
-      }
+      pageHero={mergePageHeroData(slug, page)}
     />
   );
 }

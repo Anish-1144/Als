@@ -46,7 +46,7 @@ export default function WhyChooseUsSection({
     whyChooseUs.backgroundImage?.url?.trim() || "/section2.jpg";
 
   return (
-    <section className="relative py-12 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
+    <section className="relative py-12 px-6 md:px-12 lg:px-24 bg-[#1d293d] font-sans">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative">

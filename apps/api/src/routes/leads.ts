@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { Lead } from "../models/Lead.js";
 import { JobApplication } from "../models/JobApplication.js";
+import { JobPosting } from "../models/JobPosting.js";
 import { ok, fail } from "../utils/response.js";
 
 const router = Router();
@@ -71,12 +72,45 @@ router.post("/consultation", async (req, res) => {
   return ok(res, { id: lead.id, message: "Consultation request received." });
 });
 
+router.post("/assessment", async (req, res) => {
+  const body = (req.body ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : undefined);
+
+  const name =
+    str(body.name) ||
+    str(body.fullName) ||
+    [str(body.firstName), str(body.lastName)].filter(Boolean).join(" ").trim() ||
+    "Unknown";
+  const email = str(body.email);
+  const phone = str(body.phone) || str(body.phoneNumber) || str(body.mobile);
+  const message = str(body.message);
+
+  if (!name && !email && !phone) {
+    return fail(res, 400, "VALIDATION_ERROR", "Please complete the form");
+  }
+
+  const lead = await Lead.create({
+    type: "assessment",
+    name,
+    email,
+    phone,
+    subject: "Free Assessment",
+    message,
+    payload: body,
+  });
+  return ok(res, {
+    id: lead.id,
+    message: "Thank you — your assessment request has been received.",
+  });
+});
+
 const applySchema = z.object({
   jobPosting: z.string().optional(),
   applicantName: z.string().min(1),
   email: z.string().email(),
   phone: z.string().optional(),
-  resumeUrl: z.string().optional(),
+  resumeUrl: z.string().min(1, "Resume is required"),
+  resumeFileName: z.string().optional(),
   coverLetter: z.string().optional(),
   linkedIn: z.string().optional(),
 });
@@ -84,14 +118,24 @@ const applySchema = z.object({
 router.post("/careers/apply", async (req, res) => {
   const parsed = applySchema.safeParse(req.body);
   if (!parsed.success) {
-    return fail(res, 400, "VALIDATION_ERROR", "Name and valid email are required");
+    return fail(res, 400, "VALIDATION_ERROR", "Name, email, and resume are required");
   }
+
+  let jobTitle = "General Application";
+  const jobPostingId = parsed.data.jobPosting;
+  if (jobPostingId && jobPostingId !== "general") {
+    const job = await JobPosting.findById(jobPostingId);
+    if (job?.title) jobTitle = job.title;
+  }
+
   const app = await JobApplication.create({
-    jobPostingId: parsed.data.jobPosting,
+    jobPostingId: jobPostingId === "general" ? undefined : jobPostingId,
+    jobTitle,
     applicantName: parsed.data.applicantName,
     email: parsed.data.email,
     phone: parsed.data.phone,
     resumeUrl: parsed.data.resumeUrl,
+    resumeFileName: parsed.data.resumeFileName,
     coverLetter: parsed.data.coverLetter,
     linkedIn: parsed.data.linkedIn,
   });

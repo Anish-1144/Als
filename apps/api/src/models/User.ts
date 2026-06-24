@@ -9,6 +9,7 @@ export interface IUser extends Document {
   lastName: string;
   role: UserRole;
   isActive: boolean;
+  pagePermissions: Record<string, string>;
 }
 
 const userSchema = new Schema<IUser>(
@@ -23,6 +24,11 @@ const userSchema = new Schema<IUser>(
       default: "editor",
     },
     isActive: { type: Boolean, default: true },
+    pagePermissions: {
+      type: Map,
+      of: String,
+      default: () => new Map(),
+    },
   },
   { timestamps: true },
 );

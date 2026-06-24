@@ -8,6 +8,7 @@ import { useApiList } from "@/lib/hooks/useApiList";
 import { faqSeedData } from "@/lib/mock-data/seed-faqs";
 import { getActiveDocuments } from "@/lib/mock-data";
 import type { ResourceListPageContent } from "@/lib/resources-content";
+import type { PageHeroApiData } from "@/lib/page-hero";
 import { isSectionVisible } from "@/lib/page-content";
 import {
   FaArrowUpRightFromSquare,
@@ -226,9 +227,11 @@ function DocumentList({ documents }: { documents: Record<string, unknown>[] }) {
 export default function ResourceListPageClient({
   slug,
   content,
+  pageHero,
 }: {
   slug: "faq" | "documents";
   content: ResourceListPageContent;
+  pageHero?: PageHeroApiData | null;
 }) {
   const faqApi = useApiList("/faqs", faqFallback);
   const docApi = useApiList("/documents", getActiveDocuments());
@@ -237,18 +240,22 @@ export default function ResourceListPageClient({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1d293d]">
+      <div className="min-h-screen flex items-center justify-center bg-[#1d293d] font-sans">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#00a69c] mx-auto mb-4" />
-          <p className="text-gray-400">Loading...</p>
+          <p className="text-gray-400">{slug === "faq" ? "Loading FAQs..." : "Loading documents..."}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <>
-      <PageHero slug={slug} fallback={getPageHeroFallback(slug)} />
+    <div className="font-sans">
+      <PageHero
+        slug={slug}
+        fallback={getPageHeroFallback(slug)}
+        initialData={pageHero ?? undefined}
+      />
 
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
@@ -256,6 +263,7 @@ export default function ResourceListPageClient({
           <div className="text-center mb-16">
             {intro.badge && (
               <div className="inline-flex items-center gap-2 bg-[#2d3544] px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full" />
                 <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{intro.badge}</span>
               </div>
             )}
@@ -294,6 +302,6 @@ export default function ResourceListPageClient({
         </div>
       </section>
       )}
-    </>
+    </div>
   );
 }

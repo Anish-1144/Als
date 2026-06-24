@@ -4,6 +4,7 @@ import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { WhyAlsContent } from "@/lib/page-content";
 import { isSectionVisible } from "@/lib/page-content";
+import type { PageHeroApiData } from "@/lib/page-hero";
 import {
   FaShield,
   FaUsers,
@@ -24,12 +25,22 @@ import Link from "next/link";
 const REASON_ICONS = [FaShield, FaUsers, FaHandshake, FaChartLine, FaAward, FaClock];
 const EXPLORE_ICONS = [FaBuilding, FaBriefcase, FaPhone];
 
-export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }) {
+export default function WhyAlsPageClient({
+  content,
+  pageHero,
+}: {
+  content: WhyAlsContent;
+  pageHero: PageHeroApiData;
+}) {
   const { reasons, process, explore, cta } = content;
 
   return (
-    <>
-      <PageHero slug="why-als" fallback={getPageHeroFallback("why-als")} />
+    <div className="font-sans">
+      <PageHero
+        slug="why-als"
+        fallback={getPageHeroFallback("why-als")}
+        initialData={pageHero}
+      />
 
       {isSectionVisible(reasons) && (
       <section className="py-20 pt-10 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -255,6 +266,6 @@ export default function WhyAlsPageClient({ content }: { content: WhyAlsContent }
         </div>
       </section>
       )}
-    </>
+    </div>
   );
 }

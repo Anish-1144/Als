@@ -29,10 +29,12 @@ export default function LendingSolutionsSection({
     services?.sectionSubtitle ??
     "Tailored property finance solutions for every stage of your journey. Explore our services to find the perfect fit for your needs.";
   const rawCards = services?.cards ?? services?.services;
-  const lendingCategories = mergeServiceCards(rawCards ?? DEFAULT_SERVICE_CARDS);
+  const lendingCategories = mergeServiceCards(
+    rawCards ?? DEFAULT_SERVICE_CARDS,
+  );
 
   return (
-    <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
+    <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d] font-sans">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 text-balance">

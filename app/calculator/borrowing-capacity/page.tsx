@@ -1,5 +1,6 @@
 import { getPageData } from "@/lib/api-server";
 import { mergeCalculatorPageContent } from "@/lib/calculator-content";
+import { mergePageHeroData } from "@/lib/page-hero";
 import CalculatorPageClient from "@/app/components/calculator/CalculatorPageClient";
 
 export default async function BorrowingCapacityPage() {
@@ -10,5 +11,11 @@ export default async function BorrowingCapacityPage() {
       typeof mergeCalculatorPageContent
     >[1],
   );
-  return <CalculatorPageClient slug="borrowing-capacity" content={content} />;
+  return (
+    <CalculatorPageClient
+      slug="borrowing-capacity"
+      content={content}
+      pageHero={mergePageHeroData("borrowing-capacity", page)}
+    />
+  );
 }

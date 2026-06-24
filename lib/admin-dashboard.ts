@@ -67,7 +67,11 @@ export const DASHBOARD_NAV: DashboardGroup[] = [
           desc: "Title, subtitle, background image",
         },
         sections: [
-          { href: "/admin/team", title: "Team", desc: "Team members, bios, photos" },
+          {
+            href: "/admin/team",
+            title: "Team",
+            desc: "Team members, bios, photos",
+          },
           {
             href: "/admin/testimonials",
             title: "Testimonials",
@@ -105,7 +109,11 @@ export const DASHBOARD_NAV: DashboardGroup[] = [
           desc: "Title, subtitle, background image",
         },
         sections: [
-          { href: "/admin/team", title: "Team", desc: "Team section on services page" },
+          {
+            href: "/admin/team",
+            title: "Team",
+            desc: "Team section on services page",
+          },
         ],
       },
       {
@@ -313,7 +321,11 @@ export const DASHBOARD_NAV: DashboardGroup[] = [
           desc: "Title, subtitle, background image",
         },
         sections: [
-          { href: "/admin/faqs", title: "FAQ items", desc: "Questions and answers" },
+          {
+            href: "/admin/faqs",
+            title: "FAQ items",
+            desc: "Questions and answers",
+          },
         ],
       },
     ],
@@ -321,8 +333,20 @@ export const DASHBOARD_NAV: DashboardGroup[] = [
 ];
 
 export const DASHBOARD_GLOBAL: DashboardLink[] = [
-  { href: "/admin/navbar", title: "Navbar", desc: "Site logo and navbar page heroes" },
-  { href: "/admin/footer", title: "Footer", desc: "Footer logo, contact info, links, social" },
+  {
+    href: "/admin/navbar",
+    title: "Navbar",
+    desc: "Site logo and navbar page heroes",
+  },
+  {
+    href: "/admin/footer",
+    title: "Footer",
+    desc: "Footer logo, contact info, links, social",
+  },
   { href: "/admin/popup", title: "Popup", desc: "Site-wide promotional popup" },
-  { href: "/admin/leads", title: "All leads", desc: "Contact & consultation submissions" },
+  {
+    href: "/admin/leads",
+    title: "All leads",
+    desc: "Contact & consultation submissions",
+  },
 ];

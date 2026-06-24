@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { clientApi } from "@/lib/api-client";
+import CloudinaryImageField from "@/app/components/admin/CloudinaryImageField";
 import { AdminField, SaveButton, inputClass } from "@/app/components/admin/AdminForm";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 
@@ -86,8 +87,16 @@ export default function HomeTeamTab() {
         <AdminField label="Title">
           <input className={inputClass()} value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
         </AdminField>
-        <AdminField label="Image URL">
-          <input className={inputClass()} value={editing.image} onChange={(e) => setEditing({ ...editing, image: e.target.value })} />
+        <AdminField label="Photo">
+          <CloudinaryImageField
+            value={editing.image}
+            onChange={(url) => setEditing({ ...editing, image: url })}
+            folder="als/team"
+            hint="Upload a professional headshot for this team member."
+            aspectClass="aspect-square max-h-48"
+            objectFit="cover"
+            compact
+          />
         </AdminField>
         <AdminField label="Bio">
           <textarea className={inputClass()} rows={4} value={editing.bio} onChange={(e) => setEditing({ ...editing, bio: e.target.value })} />

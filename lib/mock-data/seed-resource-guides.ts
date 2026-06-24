@@ -189,7 +189,7 @@ export const GUIDE_PAGE_DEFAULTS: Record<string, GuidePageContent> = {
           {
             title: "Location Compromises That Make Sense",
             paragraphs: [
-              "You might not afford that trendy inner-city suburb yet, but smart location choices now can pay dividends later. Look for areas with upcoming infrastructure projects, new transport links, or gentrification signs. We've seen first home buyers purchase in \"unsexy\" suburbs that became hotspots within 5-10 years. The strategy: buy the worst house in the best street you can afford, rather than the best house in a declining area.",
+              'You might not afford that trendy inner-city suburb yet, but smart location choices now can pay dividends later. Look for areas with upcoming infrastructure projects, new transport links, or gentrification signs. We\'ve seen first home buyers purchase in "unsexy" suburbs that became hotspots within 5-10 years. The strategy: buy the worst house in the best street you can afford, rather than the best house in a declining area.',
             ],
           },
           {
@@ -228,7 +228,7 @@ export const GUIDE_PAGE_DEFAULTS: Record<string, GuidePageContent> = {
       title: "Your Journey to Home Ownership Starts Here",
       paragraphs: [
         "The Australian property market isn't getting any easier to break into, but with the right guidance, strategic planning, and access to the full range of first home buyer benefits, you can make it happen. We've helped thousands of first-time buyers navigate this journey, and we've refined our process to maximise your chances of success.",
-        "Don't spend another year watching property prices rise while you try to figure this out alone. One conversation could reshape your timeline completely. We've had clients go from \"thinking about it someday\" to \"holding keys to their first home\" in under six months.",
+        'Don\'t spend another year watching property prices rise while you try to figure this out alone. One conversation could reshape your timeline completely. We\'ve had clients go from "thinking about it someday" to "holding keys to their first home" in under six months.',
       ],
       primaryLabel: "Book Your Free Consultation",
       primaryLink: "/contact",
@@ -974,9 +974,7 @@ export const GUIDE_PAGE_DEFAULTS: Record<string, GuidePageContent> = {
           },
           {
             title: "Protecting the Guarantor",
-            paragraphs: [
-              "We always recommend these protective measures:",
-            ],
+            paragraphs: ["We always recommend these protective measures:"],
             bullets: [
               "Limited guarantee: Only guarantee the minimum amount needed (usually 20% of the property value)",
               "Independent legal advice: All guarantors must (and should want to) receive independent legal advice",

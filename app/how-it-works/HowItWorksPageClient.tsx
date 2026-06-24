@@ -17,10 +17,17 @@ import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { HowItWorksContent } from "@/lib/how-it-works-content";
 import { isSectionVisible } from "@/lib/page-content";
+import type { PageHeroApiData } from "@/lib/page-hero";
 
 const STEP_ICONS = [FaComments, FaFileLines, FaMagnifyingGlass, FaHandshake, FaKey];
 
-export default function HowItWorksPageClient({ content }: { content: HowItWorksContent }) {
+export default function HowItWorksPageClient({
+  content,
+  pageHero,
+}: {
+  content: HowItWorksContent;
+  pageHero: PageHeroApiData;
+}) {
   const defaultStepId = content.steps[0]?.id ?? "consultation";
   const [activeStep, setActiveStep] = useState<string>(defaultStepId);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
@@ -75,8 +82,12 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
   const ActiveIcon = activeStepIndex >= 0 ? (STEP_ICONS[activeStepIndex] ?? FaComments) : FaComments;
 
   return (
-    <>
-      <PageHero slug="how-it-works" fallback={getPageHeroFallback("how-it-works")} />
+    <div className="font-sans">
+      <PageHero
+        slug="how-it-works"
+        fallback={getPageHeroFallback("how-it-works")}
+        initialData={pageHero}
+      />
 
       {isSectionVisible(content.processSection) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -84,6 +95,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
           <div className="text-center mb-16">
             {content.processSection.badge && (
               <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
                 <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.processSection.badge}</span>
               </div>
             )}
@@ -165,6 +177,7 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
           <div className="text-center mb-16">
             {content.faqs.badge && (
               <div className="inline-flex items-center gap-2 bg-[#00a69c]/20 px-4 py-2 rounded-full mb-6">
+                <div className="w-2 h-2 bg-[#00a69c] rounded-full"></div>
                 <span className="text-[#00a69c] text-sm font-medium uppercase tracking-wider">{content.faqs.badge}</span>
               </div>
             )}
@@ -203,6 +216,6 @@ export default function HowItWorksPageClient({ content }: { content: HowItWorksC
       )}
 
       <ContactCTASection />
-    </>
+    </div>
   );
 }

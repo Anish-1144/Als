@@ -2,14 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaArrowRightFromBracket,
   FaChevronDown,
   FaGlobe,
   FaXmark,
 } from "react-icons/fa6";
-import { ADMIN_GLOBAL_LINKS, ADMIN_SIDEBAR_NAV } from "@/lib/admin-nav";
+import { ADMIN_GLOBAL_LINKS, ADMIN_SIDEBAR_NAV, type AdminNavItem } from "@/lib/admin-nav";
+import {
+  hasModuleAccess,
+  isSuperAdmin,
+  type PagePermissions,
+} from "@/lib/access-control";
 import { DEFAULT_LOGO_URL } from "@/lib/navigation-content";
 
 function normalizePath(path: string) {
@@ -39,6 +44,36 @@ function isActive(pathname: string, href: string, peerHrefs?: string[]) {
 function isGroupActive(pathname: string, children: { href: string }[]) {
   const hrefs = children.map((child) => child.href);
   return getActiveHref(normalizePath(pathname), hrefs) !== null;
+}
+
+function canSeeModule(
+  role: string,
+  pagePermissions: PagePermissions | undefined,
+  moduleId?: string,
+): boolean {
+  if (!moduleId) return true;
+  if (moduleId === "__access_control__") return isSuperAdmin(role);
+  return hasModuleAccess(role, pagePermissions, moduleId, "view");
+}
+
+function filterNavItems(
+  items: AdminNavItem[],
+  role: string,
+  pagePermissions?: PagePermissions,
+): AdminNavItem[] {
+  return items
+    .map((item) => {
+      if (item.children) {
+        const children = item.children.filter((child) =>
+          canSeeModule(role, pagePermissions, child.moduleId ?? item.moduleId),
+        );
+        if (children.length === 0) return null;
+        return { ...item, children };
+      }
+      if (!canSeeModule(role, pagePermissions, item.moduleId)) return null;
+      return item;
+    })
+    .filter((item): item is AdminNavItem => item !== null);
 }
 
 function NavLink({
@@ -72,9 +107,9 @@ function NavLink({
   );
 }
 
-function buildExpandedState(pathname: string) {
+function buildExpandedState(pathname: string, nav: AdminNavItem[]) {
   const initial: Record<string, boolean> = {};
-  for (const item of ADMIN_SIDEBAR_NAV) {
+  for (const item of nav) {
     if (item.children) {
       initial[item.label] = isGroupActive(pathname, item.children);
     }
@@ -82,28 +117,53 @@ function buildExpandedState(pathname: string) {
   return initial;
 }
 
+export type AdminUserSession = {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  role: string;
+  pagePermissions?: PagePermissions;
+};
+
 export function AdminSidebar({
   user,
   onLogout,
   mobileOpen = false,
   onMobileClose,
 }: {
-  user: { email: string } | null;
+  user: AdminUserSession | null;
   onLogout: () => void;
   mobileOpen?: boolean;
   onMobileClose?: () => void;
 }) {
   const pathname = normalizePath(usePathname());
-  const globalHrefs = ADMIN_GLOBAL_LINKS.map((link) => link.href);
   const closeMobile = onMobileClose ?? (() => {});
 
+  const role = user?.role ?? "viewer";
+  const pagePermissions = user?.pagePermissions;
+
+  const sidebarNav = useMemo(
+    () => filterNavItems(ADMIN_SIDEBAR_NAV, role, pagePermissions),
+    [role, pagePermissions],
+  );
+
+  const globalLinks = useMemo(
+    () =>
+      ADMIN_GLOBAL_LINKS.filter((link) =>
+        canSeeModule(role, pagePermissions, link.moduleId),
+      ),
+    [role, pagePermissions],
+  );
+
+  const globalHrefs = globalLinks.map((link) => link.href);
+
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
-    buildExpandedState(pathname),
+    buildExpandedState(pathname, sidebarNav),
   );
 
   useEffect(() => {
-    setExpanded(buildExpandedState(pathname));
-  }, [pathname]);
+    setExpanded(buildExpandedState(pathname, sidebarNav));
+  }, [pathname, sidebarNav]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -118,7 +178,7 @@ export function AdminSidebar({
     setExpanded((prev) => {
       const willOpen = !(prev[label] ?? false);
       const next: Record<string, boolean> = {};
-      for (const item of ADMIN_SIDEBAR_NAV) {
+      for (const item of sidebarNav) {
         if (item.children) {
           next[item.label] = item.label === label ? willOpen : false;
         }
@@ -161,7 +221,7 @@ export function AdminSidebar({
 
       <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-width:thin]">
         <div className="space-y-0.5">
-          {ADMIN_SIDEBAR_NAV.map((item) => {
+          {sidebarNav.map((item) => {
             if (item.href) {
               return (
                 <NavLink
@@ -217,22 +277,24 @@ export function AdminSidebar({
           })}
         </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-4">
-          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-            Global
-          </p>
-          <div className="space-y-0.5">
-            {ADMIN_GLOBAL_LINKS.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                label={link.label}
-                active={isActive(pathname, link.href, globalHrefs)}
-                onNavigate={closeMobile}
-              />
-            ))}
+        {globalLinks.length > 0 && (
+          <div className="mt-4 border-t border-slate-100 pt-4">
+            <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              Global
+            </p>
+            <div className="space-y-0.5">
+              {globalLinks.map((link) => (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  active={isActive(pathname, link.href, globalHrefs)}
+                  onNavigate={closeMobile}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </nav>
 
       <div className="shrink-0 space-y-0.5 border-t border-slate-100 p-3">

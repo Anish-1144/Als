@@ -1,12 +1,12 @@
 import mongoose, { Schema, type Document } from "mongoose";
 
-export type LeadType = "contact" | "consultation";
+export type LeadType = "contact" | "consultation" | "assessment";
 export type LeadStatus = "new" | "read" | "contacted" | "closed";
 
 export interface ILead extends Document {
   type: LeadType;
   name?: string;
-  email: string;
+  email?: string;
   phone?: string;
   subject?: string;
   message?: string;
@@ -19,9 +19,9 @@ export interface ILead extends Document {
 
 const leadSchema = new Schema<ILead>(
   {
-    type: { type: String, enum: ["contact", "consultation"], required: true },
+    type: { type: String, enum: ["contact", "consultation", "assessment"], required: true },
     name: String,
-    email: { type: String, required: true },
+    email: { type: String },
     phone: String,
     subject: String,
     message: String,

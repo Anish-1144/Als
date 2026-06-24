@@ -16,8 +16,7 @@
 "use client";
 
 import { useState } from "react";
-import PageHero from "../../../components/PageHero";
-import { getPageHeroFallback } from "@/lib/page-hero";
+import ParallaxHero from "../../../components/parallax-hero";
 import { useApiList } from "@/lib/hooks/useApiList";
 import { getActiveJobPostings } from "@/lib/mock-data";
 import { formatDisplayDate } from "@/lib/format-date";
@@ -53,8 +52,12 @@ export default function JobOpenings() {
   };
 
   return (
-    <>
-      <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
+    <div className="font-sans">
+      <ParallaxHero
+        title="Current Openings"
+        subtitle="Find your next opportunity"
+        backgroundImage="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+      />
 
       {/* Introduction */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -233,6 +236,6 @@ export default function JobOpenings() {
           </a>
         </div>
       </section>
-    </>
+    </div>
   );
 }

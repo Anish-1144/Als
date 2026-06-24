@@ -1,14 +1,20 @@
 import { getPageData } from "@/lib/api-server";
-import { mergeLoanPageContent } from "@/lib/services-content";
-import LoanPageClient from "@/app/components/loan/LoanPageClient";
+import { mergeDetailedLoanContent } from "@/lib/loan-detail-content";
+import DetailedLoanPageClient from "@/app/components/loan/DetailedLoanPageClient";
 
 export default async function CarFinancingPage() {
   const page = await getPageData("car-financing");
-  const content = mergeLoanPageContent(
+  const content = mergeDetailedLoanContent(
     "car-financing",
     (page as { content?: Record<string, unknown> } | null)?.content as Parameters<
-      typeof mergeLoanPageContent
+      typeof mergeDetailedLoanContent
     >[1],
   );
-  return <LoanPageClient slug="car-financing" content={content} />;
+  return (
+    <DetailedLoanPageClient
+      slug="car-financing"
+      content={content}
+      heroImage={page?.heroBackgroundImage}
+    />
+  );
 }

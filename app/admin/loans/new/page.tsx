@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CloudinaryImageField from "@/app/components/admin/CloudinaryImageField";
 import { clientApi } from "@/lib/api-client";
 import { AdminField, SaveButton, inputClass } from "@/app/components/admin/AdminForm";
 
@@ -36,7 +37,16 @@ export default function AdminNewLoanPage() {
       <AdminField label="Title"><input className={inputClass()} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></AdminField>
       <AdminField label="Slug"><input className={inputClass()} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} /></AdminField>
       <AdminField label="Subtitle"><input className={inputClass()} value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} /></AdminField>
-      <AdminField label="Hero image URL"><input className={inputClass()} value={form.heroImage} onChange={(e) => setForm({ ...form, heroImage: e.target.value })} /></AdminField>
+      <AdminField label="Hero image">
+        <CloudinaryImageField
+          value={form.heroImage}
+          onChange={(url) => setForm({ ...form, heroImage: url })}
+          folder="als/loans"
+          hint="Upload a hero banner for this loan page."
+          aspectClass="aspect-[16/9] max-h-48"
+          compact
+        />
+      </AdminField>
       <AdminField label="Description"><textarea className={inputClass()} rows={5} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></AdminField>
       <AdminField label="Published"><input type="checkbox" checked={form.isPublished} onChange={(e) => setForm({ ...form, isPublished: e.target.checked })} /></AdminField>
       <SaveButton onClick={save} label="Create loan" />

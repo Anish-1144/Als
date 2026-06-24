@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { clientApi } from "@/lib/api-client";
+import { getModulePermissions, useAdminSession } from "@/lib/use-admin-session";
+import JobApplicationsTab from "@/app/components/admin/careers/JobApplicationsTab";
 import { AdminField, SaveButton, inputClass } from "@/app/components/admin/AdminForm";
 import {
   AdminAddButton,
@@ -38,6 +40,9 @@ function richToText(value: unknown): string {
 }
 
 export default function AdminCareersPage() {
+  const { user } = useAdminSession();
+  const careersAccess = getModulePermissions(user, "careers");
+  const [tab, setTab] = useState<"postings" | "applications">("postings");
   const [items, setItems] = useState<Job[]>([]);
   const [editing, setEditing] = useState<Job | null>(null);
   const [status, setStatus] = useState("");
@@ -144,27 +149,59 @@ export default function AdminCareersPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6 gap-4">
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
         <AdminPageTitle>Careers</AdminPageTitle>
-        <AdminAddButton
-          label="Add job"
-          onClick={() =>
-            setEditing({
-              title: "",
-              location: "",
-              type: "full-time",
-              description: "",
-              responsibilities: "",
-              requirements: "",
-              benefits: "",
-              salaryRange: "",
-              closingDate: "",
-              order: 0,
-              isActive: true,
-            })
-          }
-        />
+        {tab === "postings" && (
+          <AdminAddButton
+            label="Add job"
+            onClick={() =>
+              setEditing({
+                title: "",
+                location: "",
+                type: "full-time",
+                description: "",
+                responsibilities: "",
+                requirements: "",
+                benefits: "",
+                salaryRange: "",
+                closingDate: "",
+                order: 0,
+                isActive: true,
+              })
+            }
+          />
+        )}
       </div>
+
+      <div className="flex gap-2 mb-6">
+        {(
+          [
+            { id: "postings" as const, label: "Job Postings" },
+            { id: "applications" as const, label: "Applications" },
+          ] as const
+        ).map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTab(t.id)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+              tab === t.id
+                ? "bg-[#00a69c] text-white border-[#00a69c]"
+                : "bg-white text-gray-800 border-gray-300 hover:border-[#00a69c]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "applications" ? (
+        <JobApplicationsTab
+          canEdit={careersAccess.canEdit}
+          canDelete={careersAccess.canDelete}
+        />
+      ) : (
+        <>
       <AdminTable>
         <AdminTableHead>
           <tr>
@@ -200,6 +237,8 @@ export default function AdminCareersPage() {
           ))}
         </tbody>
       </AdminTable>
+        </>
+      )}
     </div>
   );
 }

@@ -67,7 +67,9 @@ function pageSeedContent(slug: string) {
   }
   if (slug === "calculator") return DEFAULT_CALCULATORS_HUB_CONTENT;
   if (slug in CALCULATOR_PAGE_DEFAULTS) {
-    return CALCULATOR_PAGE_DEFAULTS[slug as keyof typeof CALCULATOR_PAGE_DEFAULTS];
+    return CALCULATOR_PAGE_DEFAULTS[
+      slug as keyof typeof CALCULATOR_PAGE_DEFAULTS
+    ];
   }
   if (slug === "how-it-works") return DEFAULT_HOW_IT_WORKS_CONTENT;
   if (slug in GUIDE_PAGE_DEFAULTS) {

@@ -537,7 +537,7 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
                   { key: "year", label: "Year", type: "number" },
                   { key: "organization", label: "Organization" },
                   { key: "description", label: "Description", type: "textarea", rows: 3 },
-                  { key: "image", label: "Image URL" },
+                  { key: "image", label: "Photo", type: "image", imageFolder: "als/awards", aspectClass: "aspect-[4/3] max-h-40", objectFit: "cover" },
                   { key: "order", label: "Display order", type: "number" },
                   { key: "featured", label: "Featured", type: "checkbox" },
                   { key: "isActive", label: "Active", type: "checkbox" },
@@ -626,7 +626,7 @@ export default function AdminPageEditor({ slug }: { slug: PageSlug }) {
                 empty={{ title: "", image: "", date: "", location: "", order: 0, isActive: true }}
                 fields={[
                   { key: "title", label: "Title" },
-                  { key: "image", label: "Image URL" },
+                  { key: "image", label: "Photo", type: "image", imageFolder: "als/community", aspectClass: "aspect-[16/10] max-h-40", objectFit: "cover" },
                   { key: "date", label: "Date", placeholder: "YYYY-MM-DD" },
                   { key: "location", label: "Location" },
                   { key: "order", label: "Display order", type: "number" },

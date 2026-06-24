@@ -5,6 +5,7 @@ import { User } from "../models/User.js";
 import {
   clearAuthCookie,
   requireAuth,
+  serializeUser,
   setAuthCookie,
   signToken,
   type AuthRequest,
@@ -39,13 +40,7 @@ router.post("/login", async (req, res) => {
   setAuthCookie(res, token);
   return ok(res, {
     token,
-    user: {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-    },
+    user: serializeUser(user),
   });
 });
 
@@ -55,14 +50,7 @@ router.post("/logout", (_req, res) => {
 });
 
 router.get("/me", requireAuth, (req: AuthRequest, res) => {
-  const user = req.user!;
-  return ok(res, {
-    id: user.id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    role: user.role,
-  });
+  return ok(res, serializeUser(req.user!));
 });
 
 export default router;

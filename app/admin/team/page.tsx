@@ -8,7 +8,13 @@ export default function AdminTeamPage() {
       fields={[
         { key: "name", label: "Name" },
         { key: "title", label: "Title" },
-        { key: "image", label: "Image URL" },
+        {
+          key: "image",
+          label: "Photo",
+          type: "image",
+          imageFolder: "als/team",
+          imageHint: "Upload a professional headshot for this team member.",
+        },
         { key: "bio", label: "Bio", type: "textarea", rows: 5 },
         { key: "experience", label: "Experience" },
         { key: "phone", label: "Phone" },

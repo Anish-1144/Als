@@ -41,15 +41,29 @@ const STAT_ICONS = [FaPercent, FaDollarSign, FaKey, FaChartLine];
 
 const RELATED_ICONS = [FaHouseCircleCheck, FaBuilding, FaUserShield, FaPiggyBank, FaHouse, FaChartLine];
 
-export default function GuidePageClient({ slug, content }: { slug: string; content: GuidePageContent }) {
+import type { PageHeroApiData } from "@/lib/page-hero";
+
+export default function GuidePageClient({
+  slug,
+  content,
+  pageHero,
+}: {
+  slug: string;
+  content: GuidePageContent;
+  pageHero?: PageHeroApiData | null;
+}) {
   return (
-    <>
-      <PageHero slug={slug} fallback={getPageHeroFallback(slug)} />
+    <div className="font-sans">
+      <PageHero
+        slug={slug}
+        fallback={getPageHeroFallback(slug)}
+        initialData={pageHero ?? undefined}
+      />
 
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-4xl mx-auto">
           {isSectionVisible(content.introSection) && content.introParagraphs.length > 0 && (
-            <div className="prose prose-lg max-w-none mb-16">
+            <div className="max-w-none mb-16">
               {content.introParagraphs.map((p, i) => (
                 <p key={i} className={`text-xl text-gray-200 leading-relaxed ${i < content.introParagraphs.length - 1 ? "mb-6" : ""}`}>
                   {p}
@@ -76,9 +90,20 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
                 {section.subsections.map((sub, subIndex) => (
                   <div key={subIndex} className="mb-6">
                     {sub.title && <h3 className="text-2xl font-bold text-white mb-4">{sub.title}</h3>}
-                    {sub.paragraphs.map((p, i) => (
-                      <p key={i} className="text-gray-200 leading-relaxed mb-6">{p}</p>
-                    ))}
+                    {sub.paragraphs.map((p, i) => {
+                      const isLast = i === sub.paragraphs.length - 1;
+                      const beforeList =
+                        isLast &&
+                        ((sub.bullets?.length ?? 0) > 0 || Boolean(sub.highlightTitle));
+                      return (
+                        <p
+                          key={i}
+                          className={`text-gray-200 leading-relaxed ${beforeList ? "mb-4" : "mb-6"}`}
+                        >
+                          {p}
+                        </p>
+                      );
+                    })}
                     {sub.highlightTitle && (
                       <div className="bg-[#384252] rounded-xl p-6 mb-6">
                         <h4 className="text-xl font-bold text-white mb-4">{sub.highlightTitle}</h4>
@@ -211,6 +236,6 @@ export default function GuidePageClient({ slug, content }: { slug: string; conte
       )}
 
       <ContactCTASection />
-    </>
+    </div>
   );
 }

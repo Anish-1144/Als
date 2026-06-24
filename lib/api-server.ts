@@ -56,51 +56,78 @@ export async function getPopupData() {
 }
 
 export async function getLoansData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveLoans>>>("/loans");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveLoans>>>(
+      "/loans",
+    );
   return data ?? getActiveLoans();
 }
 
 export async function getLoanBySlug(slug: string) {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveLoans>>[0]>(
-    `/loans/${slug}`,
-  );
+  const data = await apiFetchOptional<
+    Awaited<ReturnType<typeof getActiveLoans>>[0]
+  >(`/loans/${slug}`);
   if (data) return data;
   return getActiveLoans().find((l) => l.slug === slug) ?? null;
 }
 
 export async function getTeamData(homepageOnly = false) {
   const path = homepageOnly ? "/team?homepage=true" : "/team";
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveTeam>>>(path);
-  return data ?? (homepageOnly ? getActiveTeam().filter((m) => m.showOnHomepage) : getActiveTeam());
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveTeam>>>(path);
+  return (
+    data ??
+    (homepageOnly
+      ? getActiveTeam().filter((m) => m.showOnHomepage)
+      : getActiveTeam())
+  );
 }
 
 export async function getTestimonialsData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveTestimonials>>>("/testimonials");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveTestimonials>>>(
+      "/testimonials",
+    );
   return data ?? getActiveTestimonials();
 }
 
 export async function getAwardsData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveAwards>>>("/awards");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveAwards>>>(
+      "/awards",
+    );
   return data ?? getActiveAwards();
 }
 
 export async function getLendersData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveLenders>>>("/lenders");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveLenders>>>(
+      "/lenders",
+    );
   return data ?? getActiveLenders();
 }
 
 export async function getCommunityPostsData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveCommunityPosts>>>("/community-posts");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveCommunityPosts>>>(
+      "/community-posts",
+    );
   return data ?? getActiveCommunityPosts();
 }
 
 export async function getDocumentsData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveDocuments>>>("/documents");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveDocuments>>>(
+      "/documents",
+    );
   return data ?? getActiveDocuments();
 }
 
 export async function getJobPostingsData() {
-  const data = await apiFetchOptional<Awaited<ReturnType<typeof getActiveJobPostings>>>("/careers/postings");
+  const data =
+    await apiFetchOptional<Awaited<ReturnType<typeof getActiveJobPostings>>>(
+      "/careers/postings",
+    );
   return data ?? getActiveJobPostings();
 }
 
@@ -113,7 +140,14 @@ export async function getFaqsData() {
 
 export async function getPageData(slug: string) {
   const { PAGE_REGISTRY } = await import("./page-registry");
+  const { mergePageHeroData } = await import("./page-hero");
   const fallback = PAGE_REGISTRY.find((p) => p.slug === slug) ?? null;
-  const data = await apiFetchOptional<NonNullable<typeof fallback>>(`/pages/${slug}`);
-  return data ?? fallback;
+  const data = await apiFetchOptional<NonNullable<typeof fallback>>(
+    `/pages/${slug}`,
+  );
+  if (!data && !fallback) return null;
+  const hero = mergePageHeroData(slug, data);
+  return { ...(fallback ?? {}), ...(data ?? {}), ...hero } as NonNullable<
+    typeof fallback
+  >;
 }

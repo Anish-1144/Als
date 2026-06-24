@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import AdminServicesEditor from "@/app/components/admin/AdminServicesEditor";
+import AdminDetailedLoanEditor from "@/app/components/admin/AdminDetailedLoanEditor";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { LOAN_PRODUCT_SLUGS } from "@/lib/services-content";
+import { isDetailedLoanSlug } from "@/lib/loan-detail-content";
 
 type LoanProductSlug = (typeof LOAN_PRODUCT_SLUGS)[number];
 
@@ -20,7 +22,11 @@ export default async function LoanProductAdminPage({
 
   return (
     <Suspense fallback={<AdminLoading />}>
-      <AdminServicesEditor slug={slug} />
+      {isDetailedLoanSlug(slug) ? (
+        <AdminDetailedLoanEditor slug={slug} />
+      ) : (
+        <AdminServicesEditor slug={slug} />
+      )}
     </Suspense>
   );
 }

@@ -27,6 +27,7 @@ import { AdminLoading } from "@/app/components/admin/AdminTable";
 import { AdminCardGroup, AdminSectionFields } from "@/app/components/admin/home/AdminCardGroup";
 import SectionVisibilityField from "@/app/components/admin/SectionVisibilityField";
 import { AdminImagePanelShell, PageHeroImagePanel } from "@/app/components/admin/AdminEditorImagePanel";
+import DocumentsLibraryTab from "@/app/components/admin/resources/DocumentsLibraryTab";
 
 type TabDef = { id: string; label: string; description: string };
 
@@ -293,13 +294,17 @@ export default function AdminResourcesEditor({ slug }: { slug: ResourceSlug }) {
             </div>
           )}
 
-          {isList && activeTab === "items" && (
+          {isList && activeTab === "items" && slug === "documents" && (
+            <DocumentsLibraryTab />
+          )}
+
+          {isList && activeTab === "items" && slug === "faq" && (
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
-                {slug === "faq" ? "FAQ questions and answers are managed in the FAQ library." : "Document files and links are managed in the document library."}
+                FAQ questions and answers are managed in the FAQ library.
               </p>
-              <Link href={slug === "faq" ? "/admin/faqs" : "/admin/documents"} className="inline-flex items-center gap-2 text-sm font-medium text-[#00a69c] hover:text-[#0d8a99]">
-                Open {slug === "faq" ? "FAQ" : "document"} manager <span aria-hidden>↗</span>
+              <Link href="/admin/faqs" className="inline-flex items-center gap-2 text-sm font-medium text-[#00a69c] hover:text-[#0d8a99]">
+                Open FAQ manager <span aria-hidden>↗</span>
               </Link>
             </div>
           )}

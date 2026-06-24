@@ -38,7 +38,7 @@ export default function PropertyShowcaseSection({
   const steps = mergeSteps(propertyShowcase.steps);
 
   return (
-    <section className="relative py-12 px-6 md:px-12 lg:px-24 bg-[#f3e6da]">
+    <section className="relative py-12 px-6 md:px-12 lg:px-24 bg-[#f3e6da] font-sans">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 text-[#00a69c]">

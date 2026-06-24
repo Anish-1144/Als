@@ -22,7 +22,7 @@ export default function HeroSection({ hero }: { hero?: HeroContent }) {
 
   return (
     <motion.section
-      className="relative bg-[#1d293d] overflow-hidden"
+      className="relative bg-[#1d293d] overflow-hidden font-sans"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}

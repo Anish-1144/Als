@@ -2,31 +2,29 @@
 
 import ContactForm from "@/app/components/ContactForm";
 import PageHero from "@/app/components/PageHero";
-import { getPageHeroFallback } from "@/lib/page-hero";
+import { getPageHeroFallback, type PageHeroApiData } from "@/lib/page-hero";
 import type { ContactPageContent } from "@/lib/contact-content";
 import { isSectionVisible } from "@/lib/page-content";
 import { FaClock, FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
-type PageHeroData = {
-  heroTitle: string;
-  heroSubtitle: string;
-  heroBackgroundImage: string;
-};
-
 export default function ContactPageClient({
   content,
-  pageData,
+  pageHero,
 }: {
   content: ContactPageContent;
-  pageData: PageHeroData | null;
+  pageHero: PageHeroApiData;
 }) {
   const { infoSection, map, whyUs, formSection } = content;
 
   return (
-    <>
-      <PageHero slug="contact" fallback={getPageHeroFallback("contact", { height: "h-80" })} initialData={pageData} />
+    <div className="font-sans">
+      <PageHero
+        slug="contact"
+        fallback={getPageHeroFallback("contact", { height: "h-80" })}
+        initialData={pageHero}
+      />
 
-      <section className="py-16 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16">
             <div className="space-y-8">
@@ -142,6 +140,6 @@ export default function ContactPageClient({
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

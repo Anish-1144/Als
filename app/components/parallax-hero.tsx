@@ -23,6 +23,8 @@ interface ParallaxHeroProps {
   height?: string;
   overlayOpacity?: number;
   textSize?: string;
+  /** Besley serif on the title; set false to match hackbox services hero (Author). */
+  serifTitle?: boolean;
 }
 
 export default function ParallaxHero({ 
@@ -31,7 +33,8 @@ export default function ParallaxHero({
   backgroundImage, 
   height = "h-120",
   overlayOpacity = 0.5,
-  textSize = "text-7xl"
+  textSize = "text-7xl",
+  serifTitle = true,
 }: ParallaxHeroProps) {
   const [offsetY, setOffsetY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -67,7 +70,9 @@ export default function ParallaxHero({
       />
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center text-white animate-fade-in-up">
-          <h1 className={`${textSize} font-medium tracking-wide font-besley mb-4 drop-shadow-2xl`}>
+          <h1
+            className={`${textSize} font-medium tracking-wide mb-4 drop-shadow-2xl ${serifTitle ? "font-besley" : "font-sans"}`}
+          >
             {title}
           </h1>
           {subtitle && (

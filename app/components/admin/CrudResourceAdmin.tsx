@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { clientApi } from "@/lib/api-client";
+import CloudinaryImageField from "@/app/components/admin/CloudinaryImageField";
 import { AdminField, SaveButton, inputClass } from "./AdminForm";
 import {
   AdminAddButton,
@@ -19,9 +20,13 @@ import {
 export type FieldConfig = {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "checkbox" | "select";
+  type?: "text" | "textarea" | "number" | "checkbox" | "select" | "image";
   options?: { value: string; label: string }[];
   rows?: number;
+  imageFolder?: string;
+  imageHint?: string;
+  aspectClass?: string;
+  objectFit?: "cover" | "contain";
 };
 
 export default function CrudResourceAdmin({
@@ -128,6 +133,16 @@ export default function CrudResourceAdmin({
                   </option>
                 ))}
               </select>
+            ) : f.type === "image" ? (
+              <CloudinaryImageField
+                value={String(editing[f.key] ?? "")}
+                onChange={(url) => setEditing({ ...editing, [f.key]: url })}
+                folder={f.imageFolder ?? "als/team"}
+                hint={f.imageHint ?? "Upload a team member photo (JPG, PNG, or WebP)."}
+                aspectClass={f.aspectClass ?? "aspect-square max-h-48"}
+                objectFit={f.objectFit ?? "cover"}
+                compact
+              />
             ) : (
               <input
                 type="text"

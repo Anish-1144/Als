@@ -4,17 +4,28 @@ import PageHero from "@/app/components/PageHero";
 import { getPageHeroFallback } from "@/lib/page-hero";
 import type { CareersContent } from "@/lib/page-content";
 import { isSectionVisible } from "@/lib/page-content";
+import type { PageHeroApiData } from "@/lib/page-hero";
 import { FaRocket, FaUsers, FaLightbulb, FaHeart, FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
 
 const BENEFIT_ICONS = [FaRocket, FaUsers, FaLightbulb, FaHeart];
 
-export default function CareersPageClient({ content }: { content: CareersContent }) {
+export default function CareersPageClient({
+  content,
+  pageHero,
+}: {
+  content: CareersContent;
+  pageHero: PageHeroApiData;
+}) {
   const { intro, benefits, navCards, cta } = content;
 
   return (
-    <>
-      <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
+    <div className="font-sans">
+      <PageHero
+        slug="careers"
+        fallback={getPageHeroFallback("careers")}
+        initialData={pageHero}
+      />
 
       {isSectionVisible(intro) && (
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -130,6 +141,6 @@ export default function CareersPageClient({ content }: { content: CareersContent
         </div>
       </section>
       )}
-    </>
+    </div>
   );
 }

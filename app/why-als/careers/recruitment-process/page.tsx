@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import PageHero from "@/app/components/PageHero";
-import { getPageHeroFallback } from "@/lib/page-hero";
+import ParallaxHero from "@/app/components/parallax-hero";
 import {
   FaPaperPlane,
   FaUserCheck,
@@ -25,8 +24,12 @@ import {
 
 export default function RecruitmentProcess() {
   return (
-    <>
-      <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
+    <div className="font-sans">
+      <ParallaxHero
+        title="Our Recruitment Process"
+        subtitle="What to expect when you apply"
+        backgroundImage="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+      />
 
       {/* Introduction */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -324,6 +327,6 @@ export default function RecruitmentProcess() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

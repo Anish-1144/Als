@@ -1,5 +1,6 @@
 import { getPageData } from "@/lib/api-server";
 import { mergeCareersContent } from "@/lib/page-content";
+import { mergePageHeroData } from "@/lib/page-hero";
 import CareersPageClient from "./CareersPageClient";
 
 export default async function Careers() {
@@ -9,5 +10,10 @@ export default async function Careers() {
       typeof mergeCareersContent
     >[0],
   );
-  return <CareersPageClient content={content} />;
+  return (
+    <CareersPageClient
+      content={content}
+      pageHero={mergePageHeroData("careers", page)}
+    />
+  );
 }

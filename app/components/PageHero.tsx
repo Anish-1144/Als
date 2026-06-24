@@ -2,50 +2,63 @@
 
 import { useEffect, useState } from "react";
 import { clientApiData } from "@/lib/api-client";
-import type { PageHeroFallback } from "@/lib/page-hero";
+import type { PageHeroFallback, PageHeroApiData } from "@/lib/page-hero";
+import { mergePageHeroData } from "@/lib/page-hero";
 import ParallaxHero from "@/app/components/parallax-hero";
 
-interface PageHeroData {
+interface PageHeroData extends PageHeroApiData {
   heroTitle: string;
   heroSubtitle: string;
   heroBackgroundImage: string;
 }
 
 function toHeroState(
-  data: PageHeroData | PageHeroFallback,
+  slug: string,
+  data: PageHeroApiData | PageHeroFallback | PageHeroData | null | undefined,
   height?: string,
 ) {
-  if ("heroTitle" in data) {
+  if (data && "heroTitle" in data && data.heroTitle) {
+    const merged = mergePageHeroData(slug, data);
     return {
-      title: data.heroTitle,
-      subtitle: data.heroSubtitle,
-      backgroundImage: data.heroBackgroundImage,
+      title: merged.heroTitle,
+      subtitle: merged.heroSubtitle,
+      backgroundImage: merged.heroBackgroundImage,
       height,
     };
   }
-  return { ...data, height: data.height ?? height };
+  if (data && "title" in data) {
+    return { ...data, height: data.height ?? height };
+  }
+  const merged = mergePageHeroData(slug, null);
+  return {
+    title: merged.heroTitle,
+    subtitle: merged.heroSubtitle,
+    backgroundImage: merged.heroBackgroundImage,
+    height,
+  };
 }
 
 export default function PageHero({
   slug,
   fallback,
   initialData,
+  serifTitle = true,
 }: {
   slug: string;
   fallback: PageHeroFallback;
-  initialData?: PageHeroData | null;
+  initialData?: PageHeroApiData | null;
+  /** Besley on hero title; set false for service/loan pages (Author, matches hackbox). */
+  serifTitle?: boolean;
 }) {
   const [hero, setHero] = useState(() =>
-    toHeroState(initialData ?? fallback, fallback.height),
+    toHeroState(slug, initialData ?? fallback, fallback.height),
   );
 
   useEffect(() => {
     clientApiData<PageHeroData>(`/pages/${slug}`).then((page) => {
-      if (page) {
-        setHero(toHeroState(page, fallback.height));
-      }
+      setHero(toHeroState(slug, page ?? fallback, fallback.height));
     });
-  }, [slug, fallback.height]);
+  }, [slug, fallback]);
 
   return (
     <ParallaxHero
@@ -53,6 +66,7 @@ export default function PageHero({
       subtitle={hero.subtitle}
       backgroundImage={hero.backgroundImage}
       height={hero.height}
+      serifTitle={serifTitle}
     />
   );
 }

@@ -31,6 +31,37 @@ export interface FooterData {
   logoUrl?: string;
 }
 
+export type AssessmentFieldType =
+  | "text"
+  | "email"
+  | "tel"
+  | "number"
+  | "textarea"
+  | "select"
+  | "checkbox";
+
+export interface AssessmentField {
+  id: string;
+  name: string;
+  label: string;
+  type: AssessmentFieldType;
+  required: boolean;
+  placeholder?: string;
+  options?: string[];
+  order: number;
+  isVisible: boolean;
+}
+
+export interface AssessmentConfig {
+  enabled: boolean;
+  title: string;
+  subtitle: string;
+  submitLabel: string;
+  successTitle: string;
+  successMessage: string;
+  fields: AssessmentField[];
+}
+
 export interface PopupData {
   isEnabled: boolean;
   title: string;
@@ -38,4 +69,6 @@ export interface PopupData {
   buttonText: string;
   redirectUrl: string;
   showDelay: number;
+  /** Optional in-popup assessment form. When enabled, the button opens this form. */
+  assessment?: AssessmentConfig;
 }

@@ -1,5 +1,6 @@
 import { getPageData } from "@/lib/api-server";
 import { mergeWhyAlsContent } from "@/lib/page-content";
+import { mergePageHeroData } from "@/lib/page-hero";
 import WhyAlsPageClient from "./WhyAlsPageClient";
 
 export default async function WhyAlsPage() {
@@ -9,5 +10,10 @@ export default async function WhyAlsPage() {
       typeof mergeWhyAlsContent
     >[0],
   );
-  return <WhyAlsPageClient content={content} />;
+  return (
+    <WhyAlsPageClient
+      content={content}
+      pageHero={mergePageHeroData("why-als", page)}
+    />
+  );
 }

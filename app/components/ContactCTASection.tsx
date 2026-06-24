@@ -8,7 +8,7 @@ export default function ContactCTASection({ cta }: { cta?: Partial<HomeCta> }) {
   const content = mergeCta(cta ?? DEFAULT_CTA);
 
   return (
-    <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#00a69c]">
+    <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#00a69c] font-sans">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 text-balance">
           {content.title}

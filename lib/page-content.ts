@@ -5,6 +5,8 @@ export type ContentCard = {
   description: string;
   link?: string;
   linkLabel?: string;
+  /** Optional icon key (see app/components/loan/loan-icons.ts) for detailed loan pages. */
+  icon?: string;
 };
 
 export type ContentStep = {

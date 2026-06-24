@@ -10,7 +10,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SiteShell from "./components/SiteShell";
-import { getFooterData, getNavigationData, getPopupData } from "@/lib/api-server";
+import {
+  getFooterData,
+  getNavigationData,
+  getPopupData,
+} from "@/lib/api-server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +34,11 @@ const besley = localFont({
       weight: "400",
       style: "italic",
     },
-    { path: "../fonts/Besly/Besley-Medium.ttf", weight: "500", style: "normal" },
+    {
+      path: "../fonts/Besly/Besley-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
     {
       path: "../fonts/Besly/Besley-MediumItalic.ttf",
       weight: "500",
@@ -54,7 +62,11 @@ const besley = localFont({
       weight: "800",
       style: "italic",
     },
-    { path: "../fonts/Besly/Besley-Fatface.ttf", weight: "900", style: "normal" },
+    {
+      path: "../fonts/Besly/Besley-Fatface.ttf",
+      weight: "900",
+      style: "normal",
+    },
     {
       path: "../fonts/Besly/Besley-FatfaceItalic.ttf",
       weight: "900",
@@ -105,7 +117,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${besley.variable} ${author.variable} antialiased`}
       >
-        <SiteShell footerData={footerData} popupData={popupData} navigationData={navigationData}>
+        <SiteShell
+          footerData={footerData}
+          popupData={popupData}
+          navigationData={navigationData}
+        >
           {children}
         </SiteShell>
       </body>

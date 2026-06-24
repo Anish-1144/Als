@@ -1,4 +1,8 @@
-import type { ContentCard, SectionHeader, SectionVisibility } from "@/lib/page-content";
+import type {
+  ContentCard,
+  SectionHeader,
+  SectionVisibility,
+} from "@/lib/page-content";
 
 export type GuideSubsection = {
   title?: string;
@@ -70,9 +74,15 @@ export type ResourceGuideSlug = (typeof RESOURCE_GUIDE_SLUGS)[number];
 export type ResourceListSlug = (typeof RESOURCE_LIST_SLUGS)[number];
 export type ResourceSlug = ResourceGuideSlug | ResourceListSlug;
 
-export const RESOURCE_SLUGS = [...RESOURCE_GUIDE_SLUGS, ...RESOURCE_LIST_SLUGS] as const;
+export const RESOURCE_SLUGS = [
+  ...RESOURCE_GUIDE_SLUGS,
+  ...RESOURCE_LIST_SLUGS,
+] as const;
 
-function mergeCards(defaults: ContentCard[], raw?: ContentCard[]): ContentCard[] {
+function mergeCards(
+  defaults: ContentCard[],
+  raw?: ContentCard[],
+): ContentCard[] {
   const len = Math.max(defaults.length, raw?.length ?? 0);
   return Array.from({ length: len }, (_, i) => ({
     ...(defaults[i] ?? { title: "", description: "" }),
@@ -80,18 +90,25 @@ function mergeCards(defaults: ContentCard[], raw?: ContentCard[]): ContentCard[]
   }));
 }
 
-function mergeSubsections(defaults: GuideSubsection[], raw?: GuideSubsection[]): GuideSubsection[] {
+function mergeSubsections(
+  defaults: GuideSubsection[],
+  raw?: GuideSubsection[],
+): GuideSubsection[] {
   const len = Math.max(defaults.length, raw?.length ?? 0);
   return Array.from({ length: len }, (_, i) => ({
     title: raw?.[i]?.title ?? defaults[i]?.title,
     paragraphs: raw?.[i]?.paragraphs ?? defaults[i]?.paragraphs ?? [],
     bullets: raw?.[i]?.bullets ?? defaults[i]?.bullets,
     highlightTitle: raw?.[i]?.highlightTitle ?? defaults[i]?.highlightTitle,
-    highlightBullets: raw?.[i]?.highlightBullets ?? defaults[i]?.highlightBullets,
+    highlightBullets:
+      raw?.[i]?.highlightBullets ?? defaults[i]?.highlightBullets,
   }));
 }
 
-function mergeSections(defaults: GuideSection[], raw?: GuideSection[]): GuideSection[] {
+function mergeSections(
+  defaults: GuideSection[],
+  raw?: GuideSection[],
+): GuideSection[] {
   const len = Math.max(defaults.length, raw?.length ?? 0);
   return Array.from({ length: len }, (_, i) => ({
     ...defaults[i],
@@ -99,7 +116,10 @@ function mergeSections(defaults: GuideSection[], raw?: GuideSection[]): GuideSec
     title: raw?.[i]?.title ?? defaults[i]?.title ?? "",
     introParagraphs: raw?.[i]?.introParagraphs ?? defaults[i]?.introParagraphs,
     bullets: raw?.[i]?.bullets ?? defaults[i]?.bullets,
-    subsections: mergeSubsections(defaults[i]?.subsections ?? [], raw?.[i]?.subsections),
+    subsections: mergeSubsections(
+      defaults[i]?.subsections ?? [],
+      raw?.[i]?.subsections,
+    ),
   }));
 }
 
@@ -150,8 +170,15 @@ export const DEFAULT_DOCUMENTS_PAGE_CONTENT: ResourceListPageContent = {
 
 import { GUIDE_PAGE_DEFAULTS } from "@/lib/mock-data/seed-resource-guides";
 
-export function mergeGuidePageContent(slug: string, raw?: Partial<GuidePageContent>): GuidePageContent {
-  const d = GUIDE_PAGE_DEFAULTS[slug] ?? { introSection: {}, introParagraphs: [], sections: [] };
+export function mergeGuidePageContent(
+  slug: string,
+  raw?: Partial<GuidePageContent>,
+): GuidePageContent {
+  const d = GUIDE_PAGE_DEFAULTS[slug] ?? {
+    introSection: {},
+    introParagraphs: [],
+    sections: [],
+  };
   return {
     introSection: { ...(d.introSection ?? {}), ...(raw?.introSection ?? {}) },
     introParagraphs: mergeParagraphs(d.introParagraphs, raw?.introParagraphs),
@@ -160,53 +187,96 @@ export function mergeGuidePageContent(slug: string, raw?: Partial<GuidePageConte
       d.closingBlock || raw?.closingBlock
         ? {
             title: raw?.closingBlock?.title ?? d.closingBlock?.title ?? "",
-            paragraphs: raw?.closingBlock?.paragraphs ?? d.closingBlock?.paragraphs ?? [],
-            primaryLabel: raw?.closingBlock?.primaryLabel ?? d.closingBlock?.primaryLabel ?? "",
-            primaryLink: raw?.closingBlock?.primaryLink ?? d.closingBlock?.primaryLink ?? "",
-            secondaryLabel: raw?.closingBlock?.secondaryLabel ?? d.closingBlock?.secondaryLabel ?? "",
-            secondaryLink: raw?.closingBlock?.secondaryLink ?? d.closingBlock?.secondaryLink ?? "",
+            paragraphs:
+              raw?.closingBlock?.paragraphs ?? d.closingBlock?.paragraphs ?? [],
+            primaryLabel:
+              raw?.closingBlock?.primaryLabel ??
+              d.closingBlock?.primaryLabel ??
+              "",
+            primaryLink:
+              raw?.closingBlock?.primaryLink ??
+              d.closingBlock?.primaryLink ??
+              "",
+            secondaryLabel:
+              raw?.closingBlock?.secondaryLabel ??
+              d.closingBlock?.secondaryLabel ??
+              "",
+            secondaryLink:
+              raw?.closingBlock?.secondaryLink ??
+              d.closingBlock?.secondaryLink ??
+              "",
           }
         : undefined,
-    statsSection: d.statsSection || raw?.statsSection
-      ? {
-          ...(d.statsSection ?? { title: "", cards: [] }),
-          ...raw?.statsSection,
-          cards: mergeCards(d.statsSection?.cards ?? [], raw?.statsSection?.cards),
-        }
-      : undefined,
+    statsSection:
+      d.statsSection || raw?.statsSection
+        ? {
+            ...(d.statsSection ?? { title: "", cards: [] }),
+            ...raw?.statsSection,
+            cards: mergeCards(
+              d.statsSection?.cards ?? [],
+              raw?.statsSection?.cards,
+            ),
+          }
+        : undefined,
     bottomCta:
       d.bottomCta || raw?.bottomCta
         ? {
             title: raw?.bottomCta?.title ?? d.bottomCta?.title ?? "",
             subtitle: raw?.bottomCta?.subtitle ?? d.bottomCta?.subtitle ?? "",
-            primaryLabel: raw?.bottomCta?.primaryLabel ?? d.bottomCta?.primaryLabel ?? "",
-            primaryLink: raw?.bottomCta?.primaryLink ?? d.bottomCta?.primaryLink ?? "",
-            secondaryLabel: raw?.bottomCta?.secondaryLabel ?? d.bottomCta?.secondaryLabel ?? "",
-            secondaryLink: raw?.bottomCta?.secondaryLink ?? d.bottomCta?.secondaryLink ?? "",
+            primaryLabel:
+              raw?.bottomCta?.primaryLabel ?? d.bottomCta?.primaryLabel ?? "",
+            primaryLink:
+              raw?.bottomCta?.primaryLink ?? d.bottomCta?.primaryLink ?? "",
+            secondaryLabel:
+              raw?.bottomCta?.secondaryLabel ??
+              d.bottomCta?.secondaryLabel ??
+              "",
+            secondaryLink:
+              raw?.bottomCta?.secondaryLink ?? d.bottomCta?.secondaryLink ?? "",
           }
         : undefined,
-    relatedGuides: raw?.relatedGuides ?? d.relatedGuides
-      ? {
-          title: raw?.relatedGuides?.title ?? d.relatedGuides?.title ?? "Related Guides",
-          cards: mergeCards(d.relatedGuides?.cards ?? [], raw?.relatedGuides?.cards),
-        }
-      : undefined,
+    relatedGuides:
+      (raw?.relatedGuides ?? d.relatedGuides)
+        ? {
+            title:
+              raw?.relatedGuides?.title ??
+              d.relatedGuides?.title ??
+              "Related Guides",
+            cards: mergeCards(
+              d.relatedGuides?.cards ?? [],
+              raw?.relatedGuides?.cards,
+            ),
+          }
+        : undefined,
   };
 }
 
-export function mergeResourceListPageContent(slug: ResourceListSlug, raw?: Partial<ResourceListPageContent>): ResourceListPageContent {
-  const d = slug === "faq" ? DEFAULT_FAQ_PAGE_CONTENT : DEFAULT_DOCUMENTS_PAGE_CONTENT;
+export function mergeResourceListPageContent(
+  slug: ResourceListSlug,
+  raw?: Partial<ResourceListPageContent>,
+): ResourceListPageContent {
+  const d =
+    slug === "faq" ? DEFAULT_FAQ_PAGE_CONTENT : DEFAULT_DOCUMENTS_PAGE_CONTENT;
   return {
     intro: { ...d.intro, ...raw?.intro },
     bottomCta: { ...d.bottomCta, ...raw?.bottomCta },
   };
 }
 
-export function mergeResourcePageContent(slug: ResourceSlug, raw?: Record<string, unknown>): Record<string, unknown> {
+export function mergeResourcePageContent(
+  slug: ResourceSlug,
+  raw?: Record<string, unknown>,
+): Record<string, unknown> {
   if (RESOURCE_LIST_SLUGS.includes(slug as ResourceListSlug)) {
-    return mergeResourceListPageContent(slug as ResourceListSlug, raw as Partial<ResourceListPageContent>) as unknown as Record<string, unknown>;
+    return mergeResourceListPageContent(
+      slug as ResourceListSlug,
+      raw as Partial<ResourceListPageContent>,
+    ) as unknown as Record<string, unknown>;
   }
-  return mergeGuidePageContent(slug, raw as Partial<GuidePageContent>) as unknown as Record<string, unknown>;
+  return mergeGuidePageContent(
+    slug,
+    raw as Partial<GuidePageContent>,
+  ) as unknown as Record<string, unknown>;
 }
 
 export function getResourceAdminPath(slug: ResourceSlug): string {

@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import CloudinaryImageField from "@/app/components/admin/CloudinaryImageField";
 import { clientApi } from "@/lib/api-client";
 import { AdminField, SaveButton, inputClass } from "@/app/components/admin/AdminForm";
 import { AdminLoading, AdminStatus } from "@/app/components/admin/AdminTable";
@@ -59,7 +60,16 @@ export default function AdminEditLoanPage() {
       <AdminField label="Title"><input className={inputClass()} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></AdminField>
       <AdminField label="Slug"><input className={inputClass()} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} /></AdminField>
       <AdminField label="Subtitle"><input className={inputClass()} value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} /></AdminField>
-      <AdminField label="Hero image URL"><input className={inputClass()} value={form.heroImage} onChange={(e) => setForm({ ...form, heroImage: e.target.value })} /></AdminField>
+      <AdminField label="Hero image">
+        <CloudinaryImageField
+          value={form.heroImage}
+          onChange={(url) => setForm({ ...form, heroImage: url })}
+          folder="als/loans"
+          hint="Upload a hero banner for this loan page."
+          aspectClass="aspect-[16/9] max-h-48"
+          compact
+        />
+      </AdminField>
       <AdminField label="Description"><textarea className={inputClass()} rows={5} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></AdminField>
       <AdminField label="Rate from"><input className={inputClass()} value={form.interestRateFrom} onChange={(e) => setForm({ ...form, interestRateFrom: e.target.value })} /></AdminField>
       <AdminField label="Min deposit"><input className={inputClass()} value={form.minimumDeposit} onChange={(e) => setForm({ ...form, minimumDeposit: e.target.value })} /></AdminField>

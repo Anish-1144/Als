@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { clientApi } from "@/lib/api-client";
+import CloudinaryImageField from "@/app/components/admin/CloudinaryImageField";
 import { AdminField, SaveButton, inputClass } from "@/app/components/admin/AdminForm";
 import { AdminCardGroup } from "@/app/components/admin/home/AdminCardGroup";
 import { AdminLoading } from "@/app/components/admin/AdminTable";
@@ -10,6 +11,7 @@ type TestimonialItem = {
   _id?: string;
   clientName: string;
   clientTitle: string;
+  clientImage?: string;
   testimonial: string;
   rating: number;
   order: number;
@@ -19,6 +21,7 @@ type TestimonialItem = {
 const EMPTY: TestimonialItem = {
   clientName: "",
   clientTitle: "",
+  clientImage: "",
   testimonial: "",
   rating: 5,
   order: 0,
@@ -137,6 +140,17 @@ export default function HomeTestimonialsTab({
                 setEditing({ ...editing, clientTitle: e.target.value })
               }
               placeholder="e.g. First Home Buyers"
+            />
+          </AdminField>
+          <AdminField label="Client photo">
+            <CloudinaryImageField
+              value={editing.clientImage ?? ""}
+              onChange={(url) => setEditing({ ...editing, clientImage: url })}
+              folder="als/testimonials"
+              hint="Upload a client headshot. Square photos work best."
+              aspectClass="aspect-square max-h-40"
+              objectFit="cover"
+              compact
             />
           </AdminField>
           <div className="grid sm:grid-cols-2 gap-4">

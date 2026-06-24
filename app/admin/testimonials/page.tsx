@@ -8,7 +8,7 @@ export default function AdminTestimonialsPage() {
       fields={[
         { key: "clientName", label: "Client name" },
         { key: "clientTitle", label: "Client title" },
-        { key: "clientImage", label: "Image URL" },
+        { key: "clientImage", label: "Client photo", type: "image", imageFolder: "als/testimonials" },
         { key: "testimonial", label: "Testimonial", type: "textarea", rows: 5 },
         { key: "rating", label: "Rating (1-5)", type: "number" },
         { key: "loanType", label: "Loan type" },

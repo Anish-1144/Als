@@ -15,27 +15,48 @@
 
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import PageHero from "../../../components/PageHero";
-import { getPageHeroFallback } from "@/lib/page-hero";
+import ParallaxHero from "../../../components/parallax-hero";
 import { useApiList } from "@/lib/hooks/useApiList";
 import { getActiveJobPostings } from "@/lib/mock-data";
-import { FaPaperclip, FaCircleCheck } from "react-icons/fa6";
+import { FaPaperclip, FaCircleCheck, FaXmark } from "react-icons/fa6";
+
+const RESUME_MAX_BYTES = 5 * 1024 * 1024;
+const RESUME_ACCEPT = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+function isAllowedResume(file: File) {
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  return ext === "pdf" || ext === "doc" || ext === "docx";
+}
 
 export default function Apply() {
+  return (
+    <Suspense>
+      <ApplyForm />
+    </Suspense>
+  );
+}
+
+function ApplyForm() {
   const searchParams = useSearchParams();
   const jobId = searchParams?.get("job");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: jobs } = useApiList("/careers/postings", getActiveJobPostings());
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [resumeFileName, setResumeFileName] = useState("");
+  const [resumeError, setResumeError] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({
     jobPosting: jobId || "",
     applicantName: "",
     email: "",
     phone: "",
     resumeUrl: "",
+    resumeFileName: "",
     coverLetter: "",
     linkedIn: "",
   });
@@ -51,8 +72,55 @@ export default function Apply() {
     });
   };
 
+  const handleResumeUpload = async (file: File) => {
+    setResumeError("");
+    if (!isAllowedResume(file)) {
+      setResumeError("Please upload a PDF, DOC, or DOCX file.");
+      return;
+    }
+    if (file.size > RESUME_MAX_BYTES) {
+      setResumeError("Resume must be 5MB or smaller.");
+      return;
+    }
+
+    setUploading(true);
+    const body = new FormData();
+    body.append("file", file);
+
+    try {
+      const res = await fetch("/api/v1/careers/upload-resume", {
+        method: "POST",
+        body,
+      });
+      const json = await res.json();
+      if (json.success && json.data?.url) {
+        setFormData((prev) => ({
+          ...prev,
+          resumeUrl: json.data.url,
+          resumeFileName: json.data.fileName ?? file.name,
+        }));
+        setResumeFileName(json.data.fileName ?? file.name);
+      } else {
+        setResumeError(json.error?.message ?? "Failed to upload resume.");
+        setFormData((prev) => ({ ...prev, resumeUrl: "", resumeFileName: "" }));
+        setResumeFileName("");
+      }
+    } catch {
+      setResumeError("Failed to upload resume. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError("");
+
+    if (!formData.resumeUrl) {
+      setResumeError("Please upload your resume.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -63,6 +131,7 @@ export default function Apply() {
       });
       const json = await res.json();
       if (json.success) setSubmitted(true);
+      else setSubmitError(json.error?.message ?? "Failed to submit application.");
     } finally {
       setLoading(false);
     }
@@ -70,8 +139,12 @@ export default function Apply() {
 
   if (submitted) {
     return (
-      <Suspense>
-        <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
+      <div className="font-sans">
+        <ParallaxHero
+          title="Application Submitted"
+          subtitle="Thank you for your interest"
+          backgroundImage="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2015&q=80"
+        />
 
         <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
           <div className="max-w-3xl mx-auto text-center">
@@ -99,13 +172,17 @@ export default function Apply() {
             </a>
           </div>
         </section>
-      </Suspense>
+      </div>
     );
   }
 
   return (
-    <Suspense>
-      <PageHero slug="careers" fallback={getPageHeroFallback("careers")} />
+    <div className="font-sans">
+      <ParallaxHero
+        title="Apply for a Position"
+        subtitle="Start your journey with ALS"
+        backgroundImage="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2015&q=80"
+      />
 
       {/* Application Form */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#1d293d]">
@@ -200,26 +277,59 @@ export default function Apply() {
                 />
               </div>
 
-              {/* Resume URL/Upload */}
+              {/* Resume Upload */}
               <div>
                 <label className="block text-sm font-semibold text-white mb-2">
-                  Resume URL *
+                  Upload Resume *
                 </label>
-                <div className="relative">
-                  <input
-                    type="url"
-                    name="resumeUrl"
-                    value={formData.resumeUrl}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="https://example.com/your-resume.pdf or Google Drive/Dropbox link"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-[#1d293d] text-white placeholder-gray-500 focus:border-[#00a69c] focus:ring-2 focus:ring-[#00a69c]/20 transition-colors"
-                  />
-                  <FaPaperclip className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept={RESUME_ACCEPT}
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) void handleResumeUpload(file);
+                    e.target.value = "";
+                  }}
+                />
+                <div className="rounded-lg border border-gray-600 bg-[#1d293d] p-4">
+                  {formData.resumeUrl ? (
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <FaPaperclip className="w-4 h-4 text-[#00a69c] shrink-0" />
+                        <span className="text-white text-sm truncate">{resumeFileName || "Resume uploaded"}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, resumeUrl: "" }));
+                          setResumeFileName("");
+                          setResumeError("");
+                        }}
+                        className="text-gray-400 hover:text-white transition-colors"
+                        aria-label="Remove resume"
+                      >
+                        <FaXmark className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={uploading}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-600 px-4 py-6 text-sm text-gray-300 hover:border-[#00a69c] hover:text-white transition-colors disabled:opacity-60"
+                    >
+                      <FaPaperclip className="w-4 h-4" />
+                      {uploading ? "Uploading resume..." : "Click to upload resume (PDF, DOC, DOCX — max 5MB)"}
+                    </button>
+                  )}
                 </div>
+                {resumeError && (
+                  <p className="text-xs text-red-400 mt-2">{resumeError}</p>
+                )}
                 <p className="text-xs text-gray-500 mt-2">
-                  Please provide a link to your resume (Google Drive, Dropbox,
-                  or any public URL). Make sure the link is accessible.
+                  Your resume is uploaded securely via Cloudinary. Maximum file size is 5MB.
                 </p>
               </div>
 
@@ -255,9 +365,12 @@ export default function Apply() {
 
               {/* Submit Button */}
               <div className="pt-6">
+                {submitError && (
+                  <p className="text-sm text-red-400 text-center mb-4">{submitError}</p>
+                )}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || uploading || !formData.resumeUrl}
                   className="w-full bg-[#00a69c] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#0d8a99] transition-colors duration-200 disabled:bg-gray-600 disabled:cursor-not-allowed"
                 >
                   {loading ? "Submitting..." : "Submit Application"}
@@ -273,6 +386,6 @@ export default function Apply() {
           </form>
         </div>
       </section>
-    </Suspense>
+    </div>
   );
 }

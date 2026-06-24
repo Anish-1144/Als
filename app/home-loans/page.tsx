@@ -10,5 +10,11 @@ export default async function HomeLoansPage() {
       typeof mergeLoanPageContent
     >[1],
   );
-  return <LoanPageClient slug="home-loans" content={content} />;
+  return (
+    <LoanPageClient
+      slug="home-loans"
+      content={content}
+      heroImage={page?.heroBackgroundImage}
+    />
+  );
 }
