@@ -9,7 +9,9 @@ export interface IUser extends Document {
   lastName: string;
   role: UserRole;
   isActive: boolean;
-  pagePermissions: Record<string, string>;
+  pagePermissions: Map<string, string>;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new Schema<IUser>(

@@ -12,12 +12,27 @@ import { fail, ok } from "../../utils/response.js";
 import {
   buildEmptyPermissions,
   normalizePermissions,
+  type PagePermissions,
 } from "../../../../../lib/access-control.js";
 
 const router = Router();
 
+const accessLevelSchema = z.enum(["none", "view", "edit", "full"]);
+
 router.use(requireAuth);
 router.use(requireSuperAdmin);
+
+function permissionsFromInput(
+  input?: Record<string, z.infer<typeof accessLevelSchema>>,
+): PagePermissions {
+  return normalizePermissions(input as Record<string, string> | undefined);
+}
+
+function permissionsToMap(permissions: PagePermissions): Map<string, string> {
+  return new Map(
+    Object.entries(permissions) as [string, string][],
+  );
+}
 
 function serializeUserList(user: InstanceType<typeof User>) {
   const perms = normalizePermissions(userPermissionsMap(user));
@@ -45,9 +60,7 @@ const createUserSchema = z.object({
   password: z.string().min(8),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  pagePermissions: z
-    .record(z.enum(["none", "view", "edit", "full"]))
-    .optional(),
+  pagePermissions: z.record(z.string(), accessLevelSchema).optional(),
 });
 
 router.post("/", async (req, res) => {
@@ -63,7 +76,7 @@ router.post("/", async (req, res) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const permissions = normalizePermissions(pagePermissions ?? buildEmptyPermissions());
+  const permissions = permissionsFromInput(pagePermissions ?? buildEmptyPermissions());
 
   const user = await User.create({
     email: email.toLowerCase(),
@@ -72,7 +85,7 @@ router.post("/", async (req, res) => {
     lastName,
     role: "editor",
     isActive: true,
-    pagePermissions: new Map(Object.entries(permissions)),
+    pagePermissions: permissionsToMap(permissions),
   });
 
   return ok(res, serializeUserList(user));
@@ -82,9 +95,7 @@ const updateUserSchema = z.object({
   firstName: z.string().min(1).optional(),
   lastName: z.string().min(1).optional(),
   isActive: z.boolean().optional(),
-  pagePermissions: z
-    .record(z.enum(["none", "view", "edit", "full"]))
-    .optional(),
+  pagePermissions: z.record(z.string(), accessLevelSchema).optional(),
 });
 
 router.get("/:id", async (req, res) => {
@@ -111,8 +122,8 @@ router.put("/:id", async (req: AuthRequest, res) => {
   if (lastName !== undefined) user.lastName = lastName;
   if (isActive !== undefined) user.isActive = isActive;
   if (pagePermissions !== undefined) {
-    const normalized = normalizePermissions(pagePermissions);
-    user.pagePermissions = new Map(Object.entries(normalized));
+    const normalized = permissionsFromInput(pagePermissions);
+    user.pagePermissions = permissionsToMap(normalized);
     user.markModified("pagePermissions");
   }
 
