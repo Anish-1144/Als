@@ -1,0 +1,51 @@
+# Production stack for a VPS.
+#
+#   docker compose up -d --build
+#
+# Only the web service is published (port 3000). Put a reverse proxy
+# (nginx/Caddy/Traefik) in front of it for HTTPS and your domain.
+# MongoDB is external (Atlas) — configured via MONGO_URI in .env.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    # Loads MONGO_URI, JWT_SECRET, CLOUDINARY_*, CORS_ORIGIN, etc.
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+    volumes:
+      # Shared uploads/media: API writes here, web serves it.
+      - media:/app/public/media
+    # Internal to the compose network for the web container, PLUS bound to the
+    # host's loopback so you can verify it on the VPS (curl localhost:4000/health).
+    # It is NOT reachable from the public internet.
+    ports:
+      - "127.0.0.1:4000:4000"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Baked into the /api/v1/* rewrite at build time (see Dockerfile).
+        API_URL: http://api:4000
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      # In-cluster address of the API container (used by the Next rewrite
+      # and server-side fetches). Not exposed to the public internet.
+      API_URL: http://api:4000
+    volumes:
+      # Read-only view of the same media volume so /media/* resolves.
+      - media:/app/public/media:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  media:

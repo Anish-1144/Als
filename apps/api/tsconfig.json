@@ -8,7 +8,11 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@/lib/*": ["lib/*"]
+    }
   },
   "include": ["src/**/*"]
 }
