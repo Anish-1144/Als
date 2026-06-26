@@ -13,7 +13,7 @@ function requireEnv(key: string, fallback?: string): string {
 }
 
 export const env = {
-  port: Number(process.env.PORT ?? 4000),
+  port: Number(process.env.PORT ?? 4001),
   mongoUri: requireEnv("MONGO_URI"),
   jwtSecret: requireEnv("JWT_SECRET", "dev-secret-change-in-production"),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "7d",

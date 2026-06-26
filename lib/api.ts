@@ -1,5 +1,5 @@
 const API_BASE =
-  process.env.API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+  process.env.API_URL?.replace(/\/$/, "") ?? "http://localhost:4001";
 
 export type ApiResponse<T> = {
   success: boolean;

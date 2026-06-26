@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
       }
       router.push("/admin");
     } catch {
-      setError("Could not connect to API. Is the server running on port 4000?");
+      setError("Could not connect to API. Is the server running on port 4001?");
     } finally {
       setLoading(false);
     }

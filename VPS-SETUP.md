@@ -1,12 +1,12 @@
 # VPS Deployment — From Scratch (Docker + Nginx + HTTPS)
 
 Full walkthrough in order:
-**git pull → env setup → docker up → verify web:3000 & api:4000 → Nginx →
+**git pull → env setup → docker up → verify web:3002 & api:4001 → Nginx →
 Certbot/HTTPS → domain → update CORS to the domain.**
 
 The stack = two containers:
-- **web** (Next.js) → port **3000** (public via Nginx)
-- **api** (Express) → port **4000** (loopback only, proxied internally by web)
+- **web** (Next.js) → host port **3002** (public via Nginx; 3000 is used by another project)
+- **api** (Express) → host port **4001** (loopback only, proxied internally by web)
 
 MongoDB is **Atlas** (external, allows all networks). Media uploads go to
 **Cloudinary**.
@@ -66,7 +66,7 @@ JWT_EXPIRES_IN=7d
 
 # Set to your domain (used by API CORS). For now you can keep localhost;
 # we update this in STEP 8 once the domain works.
-CORS_ORIGIN=http://SERVER_IP:3000
+CORS_ORIGIN=http://SERVER_IP:3002
 
 # First admin account (created by the seed step)
 SEED_ADMIN_EMAIL=admin@yourdomain.com
@@ -80,7 +80,7 @@ CLOUDINARY_FOLDER=als
 ```
 
 > You do NOT need to set `API_URL` — Docker wires `web → api` automatically
-> (built in as `http://api:4000`).
+> (built in as `http://api:4001`).
 
 Save: `Ctrl+O`, `Enter`, then `Ctrl+X`.
 
@@ -101,17 +101,17 @@ docker compose logs -f     # watch startup; Ctrl+C to stop watching
 
 ---
 
-## STEP 4 — Verify the backend (api:4000)
+## STEP 4 — Verify the backend (api:4001)
 
 ```bash
 # API health (bound to localhost on the VPS)
-curl http://localhost:4000/health
+curl http://localhost:4001/health
 # -> {"success":true,"data":{"status":"ok"}}
 
 # Check the api logs say it connected
 docker compose logs api | tail -5
 # -> MongoDB connected
-# -> API running on http://localhost:4000
+# -> API running on http://localhost:4001
 # -> Cloudinary: configured
 ```
 
@@ -120,16 +120,16 @@ If `MongoDB connected` is missing, your `MONGO_URI` is wrong — fix `.env` and 
 
 ---
 
-## STEP 5 — Verify the frontend (web:3000)
+## STEP 5 — Verify the frontend (web:3002)
 
 ```bash
-curl -I http://localhost:3000          # -> HTTP/1.1 200 OK
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/v1/homepage
+curl -I http://localhost:3002          # -> HTTP/1.1 200 OK
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3002/api/v1/homepage
 # -> 200  (confirms web is proxying to the api correctly)
 ```
 
-If your firewall allows port 3000 you can also open
-`http://SERVER_IP:3000` in a browser — but the proper way is via Nginx below.
+If your firewall allows port 3002 you can also open
+`http://SERVER_IP:3002` in a browser — but the proper way is via Nginx below.
 
 ---
 
@@ -174,7 +174,7 @@ server {
     client_max_body_size 12M;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3002;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -248,7 +248,7 @@ docker compose up -d
 ```
 
 > No rebuild needed — `CORS_ORIGIN` is a runtime value. (The internal
-> `API_URL=http://api:4000` is unaffected by your domain.)
+> `API_URL=http://api:4001` is unaffected by your domain.)
 
 ---
 
@@ -285,6 +285,6 @@ docker compose up -d              # start again
 | `MongoDB connected` missing in api logs | Wrong `MONGO_URI` in `.env`; fix and `docker compose up -d` |
 | Site shows generic/"mock" content | api can't reach DB — check `docker compose logs api` |
 | Image uploads fail | Check `CLOUDINARY_*` in `.env` (api logs print `Cloudinary: configured`) |
-| `502 Bad Gateway` from Nginx | web container down — `docker compose ps` / `logs web`; ensure proxy_pass is `127.0.0.1:3000` |
+| `502 Bad Gateway` from Nginx | web container down — `docker compose ps` / `logs web`; ensure proxy_pass is `127.0.0.1:3002` |
 | `permission denied` on docker | You skipped `usermod -aG docker $USER` (re-login) |
 | Certbot fails | DNS A record not propagated yet, or port 80 blocked by firewall |

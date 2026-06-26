@@ -2,10 +2,13 @@
 
 This project runs as two containers orchestrated by `docker-compose.yml`:
 
-| Service | What it is              | Port  | Public? |
-| ------- | ----------------------- | ----- | ------- |
-| `web`   | Next.js frontend        | 3000  | yes     |
-| `api`   | Express API (`apps/api`)| 4000  | no (internal only) |
+| Service | What it is              | Host port | Public? |
+| ------- | ----------------------- | --------- | ------- |
+| `web`   | Next.js frontend        | 3002      | yes     |
+| `api`   | Express API (`apps/api`)| 4001 (loopback) | no (internal only) |
+
+> Ports are pinned to 3002/4001 because this VPS hosts other projects on
+> 3000/4000. The api binds only to `127.0.0.1:4001` on the host.
 
 MongoDB is **external** (MongoDB Atlas) — it is configured through `MONGO_URI`,
 so there is no database container.
@@ -43,7 +46,7 @@ Important for production:
 - `CORS_ORIGIN` — your public site URL, e.g. `https://yourdomain.com`.
 - `CLOUDINARY_*` — required; media uploads are stored in Cloudinary.
 
-> `API_URL` is set automatically to `http://api:4000` inside the stack — you do
+> `API_URL` is set automatically to `http://api:4001` inside the stack — you do
 > not need to set it in `.env` for Docker.
 
 ## 3. Build and start
@@ -59,7 +62,7 @@ docker compose ps
 docker compose logs -f
 ```
 
-The site is now on `http://<your-server-ip>:3000`.
+The site is now on `http://<your-server-ip>:3002`.
 
 ## 4. Seed the first admin user
 
@@ -72,12 +75,12 @@ docker compose run --rm api npm run seed
 
 ## 5. Put it behind a domain + HTTPS (recommended)
 
-Only port 3000 is published. Run a reverse proxy in front of it. Example with
+Only port 3002 is published. Run a reverse proxy in front of it. Example with
 Caddy (automatic HTTPS):
 
 ```
 yourdomain.com {
-    reverse_proxy localhost:3000
+    reverse_proxy localhost:3002
 }
 ```
 
@@ -87,7 +90,7 @@ Or nginx:
 server {
     server_name yourdomain.com;
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3002;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;

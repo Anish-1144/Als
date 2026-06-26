@@ -27,5 +27,5 @@ COPY lib /app/lib
 # Uploads + static media live here and are shared with the web container.
 RUN mkdir -p /app/public/media
 
-EXPOSE 4000
+EXPOSE 4001
 CMD ["npm", "start"]
